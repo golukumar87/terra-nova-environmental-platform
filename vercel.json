@@ -1,0 +1,79 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "server.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "*",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "server.js"
+    },
+    {
+      "src": "/admin",
+      "dest": "server.js"
+    },
+    {
+      "src": "/dashboard",
+      "dest": "server.js"
+    },
+    {
+      "src": "/campaigns",
+      "dest": "server.js"
+    },
+    {
+      "src": "/blog",
+      "dest": "server.js"
+    },
+    {
+      "src": "/blog/([^/]+)",
+      "dest": "server.js"
+    },
+    {
+      "src": "/stories",
+      "dest": "server.js"
+    },
+    {
+      "src": "/stories/([^/]+)",
+      "dest": "server.js"
+    },
+    {
+      "src": "/campaign/([^/]+)",
+      "dest": "server.js"
+    },
+    {
+      "src": "/project/([^/]+)",
+      "dest": "server.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/$1"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)\\.(webp|jpg|jpeg|png|mp4)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=604800, stale-while-revalidate=86400" }
+      ]
+    },
+    {
+      "source": "/(.*)\\.(js|css)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=3600, stale-while-revalidate=86400" }
+      ]
+    },
+    {
+      "source": "/(.*)\\.html",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-cache" }
+      ]
+    }
+  ]
+}

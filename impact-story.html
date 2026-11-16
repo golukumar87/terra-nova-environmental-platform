@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Terra Nova Impact Story</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { background: #050810; color: white; }
+    .glass { background: rgba(255,255,255,0.025); border: 1px solid rgba(255,255,255,0.1); }
+    .story-copy p { margin-top: 1rem; font-size: 1rem; line-height: 1.9; color: rgba(255,255,255,0.8); }
+    .story-copy h2 { margin-top: 2rem; font-family: 'Cinzel', serif; font-size: 1.8rem; }
+  </style>
+</head>
+<body>
+  <header class="border-b border-white/10 px-5 py-5 sm:px-8">
+    <div class="mx-auto flex max-w-7xl items-center justify-between gap-4">
+      <a href="/" class="text-xs font-bold tracking-[0.25em]">TERRA NOVA</a>
+      <nav class="flex items-center gap-5 text-sm text-gray-300">
+        <a href="/stories.html" class="hover:text-white">Impact stories</a>
+        <a href="/campaigns.html" class="hover:text-white">Campaigns</a>
+        <a href="/blog.html" class="hover:text-white">Journal</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="mx-auto max-w-5xl px-5 py-16 sm:px-8 sm:py-24">
+    <a href="/stories.html" class="text-xs uppercase tracking-[0.16em] text-[#c2d9b8]">← Back to impact stories</a>
+    <div id="story-status" class="mt-8 text-sm text-gray-400" role="status" aria-live="polite">Loading story...</div>
+    <article id="story-shell" class="hidden mt-8">
+      <p class="text-xs uppercase tracking-[0.3em] text-[#a5c49a]">Case study</p>
+      <h1 id="story-title" class="mt-4 font-['Cinzel'] text-4xl uppercase leading-tight sm:text-6xl"></h1>
+      <p id="story-summary" class="mt-6 text-lg text-gray-200 leading-relaxed"></p>
+      <div class="mt-8 grid gap-4 md:grid-cols-2">
+        <div class="glass rounded-2xl p-5">
+          <p class="text-[10px] uppercase tracking-[0.22em] text-gray-400">Before</p>
+          <p id="story-before" class="mt-3 text-sm text-gray-300"></p>
+        </div>
+        <div class="glass rounded-2xl p-5">
+          <p class="text-[10px] uppercase tracking-[0.22em] text-gray-400">After</p>
+          <p id="story-after" class="mt-3 text-sm text-gray-300"></p>
+        </div>
+      </div>
+      <div id="story-content" class="story-copy mt-10"></div>
+    </article>
+  </main>
+
+  <script>
+    const slug = new URLSearchParams(location.search).get('slug') || location.pathname.split('/').filter(Boolean).pop();
+    const localHosts = ['localhost', '127.0.0.1', '::1'];
+    const useLocalApiServer = location.protocol === 'file:' || (localHosts.includes(location.hostname) && location.port !== '3000');
+    const apiOrigin = useLocalApiServer ? `http://${location.hostname || 'localhost'}:3000` : location.origin;
+
+    async function loadStory() {
+      const status = document.getElementById('story-status');
+      if (!slug || slug === 'impact-story.html') {
+        status.textContent = 'No impact story was selected. Return to the impact stories page and choose a published story.';
+        status.classList.add('text-red-300');
+        return;
+      }
+
+      try {
+        const response = await fetch(`${apiOrigin}/api/case-studies/${encodeURIComponent(slug)}`, { headers: { Accept: 'application/json' } });
+        const contentType = response.headers.get('content-type') || '';
+        if (!contentType.includes('application/json')) throw new Error(`The impact story API at ${apiOrigin} returned a page instead of JSON.`);
+        const data = await response.json();
+        if (response.status === 404) {
+          throw new Error(`The impact story "${slug}" is not published or no longer exists. Return to the impact stories page and choose a published story.`);
+        }
+        if (!response.ok) throw new Error(data.error || 'Impact story could not be loaded.');
+        const story = data.caseStudy;
+        if (!story) throw new Error('Impact story not found.');
+        document.title = `${story.title} | Terra Nova Impact Story`;
+        document.getElementById('story-title').textContent = story.title;
+        document.getElementById('story-summary').textContent = story.summary;
+        document.getElementById('story-before').textContent = story.beforeData || 'Baseline details pending.';
+        document.getElementById('story-after').textContent = story.afterData || 'Updated results pending.';
+        const content = document.getElementById('story-content');
+        content.innerHTML = [
+          `<h2>Challenge</h2><p>${(story.challenge || '').replace(/\n/g, '</p><p>')}</p>`,
+          `<h2>Approach</h2><p>${(story.approach || '').replace(/\n/g, '</p><p>')}</p>`,
+          `<h2>Results</h2><p>${(story.results || '').replace(/\n/g, '</p><p>')}</p>`
+        ].join('');
+        document.getElementById('story-shell').classList.remove('hidden');
+        document.getElementById('story-status').textContent = '';
+      } catch (error) {
+        document.getElementById('story-status').textContent = error.message || 'Could not load impact story.';
+        document.getElementById('story-status').classList.add('text-red-300');
+      }
+    }
+
+    loadStory();
+  </script>
+</body>
+</html>

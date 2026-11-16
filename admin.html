@@ -1,0 +1,649 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Terra Nova Admin</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background: linear-gradient(180deg, #071118 0%, #0c1723 100%);
+      color: #ecfdf5;
+    }
+    .panel { background: rgba(15,23,42,0.82); border: 1px solid rgba(255,255,255,0.08); }
+    .muted { color: rgba(255,255,255,0.68); }
+    .table-row:hover { background: rgba(255,255,255,0.02); }
+  </style>
+</head>
+<body class="min-h-screen">
+  <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+    <header class="mb-8 flex flex-col gap-4 border-b border-white/10 pb-6 md:flex-row md:items-center md:justify-between">
+      <div>
+        <p class="text-xs uppercase tracking-[0.35em] text-terraGreen-300">Terra Nova</p>
+        <h1 class="mt-2 text-3xl font-bold">Admin Dashboard</h1>
+      </div>
+      <div class="flex gap-3">
+        <a href="/dashboard.html" class="rounded-full border border-white/15 px-4 py-2 text-sm text-white hover:bg-white/5">Project Dashboard</a>
+        <a href="/" class="rounded-full border border-white/15 px-4 py-2 text-sm text-white hover:bg-white/5">Home</a>
+      </div>
+    </header>
+
+    <section class="panel rounded-2xl p-5 mb-8">
+      <div class="grid gap-4 md:grid-cols-4">
+        <div class="rounded-xl border border-white/10 bg-navy-950/60 p-4">
+          <div class="text-xs uppercase tracking-[0.25em] text-gray-400">Subscribers</div>
+          <div id="subscribers-count" class="mt-3 text-3xl font-bold">--</div>
+        </div>
+        <div class="rounded-xl border border-white/10 bg-navy-950/60 p-4">
+          <div class="text-xs uppercase tracking-[0.25em] text-gray-400">Members</div>
+          <div id="members-count" class="mt-3 text-3xl font-bold">--</div>
+        </div>
+        <div class="rounded-xl border border-white/10 bg-navy-950/60 p-4">
+          <div class="text-xs uppercase tracking-[0.25em] text-gray-400">Users</div>
+          <div id="users-count" class="mt-3 text-3xl font-bold">--</div>
+        </div>
+        <div class="rounded-xl border border-white/10 bg-navy-950/60 p-4">
+          <div class="text-xs uppercase tracking-[0.25em] text-gray-400">Projects</div>
+          <div id="projects-count" class="mt-3 text-3xl font-bold">--</div>
+        </div>
+      </div>
+    </section>
+
+    <div class="grid gap-8 xl:grid-cols-[1.3fr,0.7fr]">
+      <section class="panel rounded-2xl p-5">
+        <div class="mb-4 flex items-center justify-between">
+          <h2 class="text-xl font-semibold">Projects</h2>
+          <button id="refresh-projects" class="rounded-full border border-white/10 px-3 py-1.5 text-xs uppercase tracking-[0.2em] text-gray-300 hover:bg-white/5">Refresh</button>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="min-w-full text-left text-sm">
+            <thead class="text-xs uppercase tracking-[0.25em] text-gray-400">
+              <tr>
+                <th class="pb-3">Name</th>
+                <th class="pb-3">Category</th>
+                <th class="pb-3">Region</th>
+                <th class="pb-3">Impact</th>
+                <th class="pb-3">Status</th>
+                <th class="pb-3">Action</th>
+              </tr>
+            </thead>
+            <tbody id="projects-table" class="divide-y divide-white/10"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <aside class="space-y-8">
+        <section class="panel rounded-2xl p-5">
+          <h2 class="mb-4 text-xl font-semibold">Login</h2>
+          <div class="space-y-3">
+            <input id="admin-email" class="w-full rounded-xl border border-white/10 bg-navy-950/70 px-3 py-2.5 outline-none focus:border-terraGreen-400" type="email" placeholder="Admin email" autocomplete="username" />
+            <input id="admin-password" class="w-full rounded-xl border border-white/10 bg-navy-950/70 px-3 py-2.5 outline-none focus:border-terraGreen-400" type="password" placeholder="Admin password" autocomplete="current-password" />
+            <button id="admin-login-btn" class="w-full rounded-xl bg-terraGreen-500 px-4 py-3 font-semibold text-white hover:bg-terraGreen-400">Login</button>
+            <p id="admin-status" class="muted text-sm"></p>
+          </div>
+        </section>
+
+        <section class="panel rounded-2xl p-5">
+          <h2 class="mb-4 text-xl font-semibold">Add Project</h2>
+          <form id="project-form" class="space-y-3">
+            <input id="project-name" class="w-full rounded-xl border border-white/10 bg-navy-950/70 px-3 py-2.5 outline-none focus:border-terraGreen-400" placeholder="Project name" required />
+            <input id="project-category" class="w-full rounded-xl border border-white/10 bg-navy-950/70 px-3 py-2.5 outline-none focus:border-terraGreen-400" placeholder="Category" required />
+            <input id="project-region" class="w-full rounded-xl border border-white/10 bg-navy-950/70 px-3 py-2.5 outline-none focus:border-terraGreen-400" placeholder="Region" required />
+            <input id="project-impact" class="w-full rounded-xl border border-white/10 bg-navy-950/70 px-3 py-2.5 outline-none focus:border-terraGreen-400" placeholder="Impact" />
+            <input id="project-status" class="w-full rounded-xl border border-white/10 bg-navy-950/70 px-3 py-2.5 outline-none focus:border-terraGreen-400" value="Active" placeholder="Status" />
+            <div class="grid grid-cols-2 gap-3">
+              <input id="project-funding" type="number" class="w-full rounded-xl border border-white/10 bg-navy-950/70 px-3 py-2.5 outline-none focus:border-terraGreen-400" placeholder="Funding goal" value="1000000" />
+              <input id="project-raised" type="number" class="w-full rounded-xl border border-white/10 bg-navy-950/70 px-3 py-2.5 outline-none focus:border-terraGreen-400" placeholder="Raised" value="0" />
+            </div>
+            <button type="submit" class="w-full rounded-xl bg-white text-navy-900 px-4 py-3 font-semibold hover:bg-gray-200">Save Project</button>
+            <p id="project-status-msg" class="muted text-sm"></p>
+          </form>
+        </section>
+      </aside>
+    </div>
+
+    <div class="mt-8 grid gap-8 xl:grid-cols-2">
+      <section class="panel rounded-2xl p-5">
+        <div class="mb-4 flex items-center justify-between"><h2 class="text-xl font-semibold">Movement Members</h2><button id="refresh-members" class="rounded-full border border-white/10 px-3 py-1.5 text-xs uppercase tracking-[0.2em] text-gray-300 hover:bg-white/5">Refresh</button></div>
+        <form id="member-form" class="mb-5 grid gap-3 sm:grid-cols-3">
+          <input id="member-name" required placeholder="Name" class="rounded-xl border border-white/10 bg-navy-950/70 px-3 py-2.5 outline-none focus:border-terraGreen-400" />
+          <input id="member-email" required type="email" placeholder="Email" class="rounded-xl border border-white/10 bg-navy-950/70 px-3 py-2.5 outline-none focus:border-terraGreen-400" />
+          <div class="flex gap-2"><input id="member-interest" placeholder="Interest" class="min-w-0 flex-1 rounded-xl border border-white/10 bg-navy-950/70 px-3 py-2.5 outline-none focus:border-terraGreen-400" /><button class="rounded-xl bg-terraGreen-500 px-4 font-semibold hover:bg-terraGreen-400">Add</button></div>
+        </form>
+        <p id="member-status" class="muted mb-3 text-sm" aria-live="polite"></p>
+        <div class="overflow-x-auto"><table class="min-w-full text-left text-sm"><thead class="text-xs uppercase tracking-[0.2em] text-gray-400"><tr><th class="pb-3">Name</th><th class="pb-3">Email</th><th class="pb-3">Interest</th><th class="pb-3">Actions</th></tr></thead><tbody id="members-table" class="divide-y divide-white/10"></tbody></table></div>
+      </section>
+
+      <section class="panel rounded-2xl p-5">
+        <div class="mb-4 flex items-center justify-between"><h2 class="text-xl font-semibold">Newsletter Subscribers</h2><button id="refresh-subscribers" class="rounded-full border border-white/10 px-3 py-1.5 text-xs uppercase tracking-[0.2em] text-gray-300 hover:bg-white/5">Refresh</button></div>
+        <form id="subscriber-form" class="mb-5 flex gap-3">
+          <input id="subscriber-email" required type="email" placeholder="Email address" class="min-w-0 flex-1 rounded-xl border border-white/10 bg-navy-950/70 px-3 py-2.5 outline-none focus:border-terraGreen-400" />
+          <button class="rounded-xl bg-terraGreen-500 px-4 font-semibold hover:bg-terraGreen-400">Add</button>
+        </form>
+        <p id="subscriber-status" class="muted mb-3 text-sm" aria-live="polite"></p>
+        <div class="overflow-x-auto"><table class="min-w-full text-left text-sm"><thead class="text-xs uppercase tracking-[0.2em] text-gray-400"><tr><th class="pb-3">Email</th><th class="pb-3">Subscribed</th><th class="pb-3">Actions</th></tr></thead><tbody id="subscribers-table" class="divide-y divide-white/10"></tbody></table></div>
+      </section>
+    </div>
+
+    <section class="panel mt-8 rounded-2xl p-5">
+      <div class="mb-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div>
+          <h2 class="text-xl font-semibold">Content library</h2>
+          <p class="muted mt-1 text-sm">Create and manage articles, authors, case studies, and developer-approved testimonials.</p>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <button type="button" data-content-type="articles" class="content-type-btn rounded-full border border-terraGreen-400/50 bg-terraGreen-500/10 px-3 py-1.5 text-xs uppercase tracking-[0.2em] text-terraGreen-200">Articles</button>
+          <button type="button" data-content-type="authors" class="content-type-btn rounded-full border border-white/10 px-3 py-1.5 text-xs uppercase tracking-[0.2em] text-gray-300 hover:bg-white/5">Authors</button>
+          <button type="button" data-content-type="case-studies" class="content-type-btn rounded-full border border-white/10 px-3 py-1.5 text-xs uppercase tracking-[0.2em] text-gray-300 hover:bg-white/5">Case studies</button>
+          <button type="button" data-content-type="testimonials" class="content-type-btn rounded-full border border-white/10 px-3 py-1.5 text-xs uppercase tracking-[0.2em] text-gray-300 hover:bg-white/5">Testimonials</button>
+        </div>
+      </div>
+      <p id="content-status" class="muted mb-4 text-sm" aria-live="polite"></p>
+      <div class="grid gap-6 lg:grid-cols-[0.9fr,1.1fr]">
+        <form id="content-form" class="space-y-3">
+          <div id="content-form-fields"></div>
+          <div class="flex gap-3 pt-2">
+            <button id="content-save-btn" type="submit" class="rounded-xl bg-terraGreen-500 px-4 py-3 font-semibold text-white hover:bg-terraGreen-400">Save entry</button>
+            <button id="content-reset-btn" type="button" class="rounded-xl border border-white/10 px-4 py-3 font-semibold text-gray-200 hover:bg-white/5">Clear</button>
+          </div>
+        </form>
+        <div class="overflow-x-auto">
+          <table class="min-w-full text-left text-sm">
+            <thead class="text-xs uppercase tracking-[0.2em] text-gray-400"><tr><th class="pb-3">Title / Name</th><th class="pb-3">Status</th><th class="pb-3">Actions</th></tr></thead>
+            <tbody id="content-table" class="divide-y divide-white/10"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel mt-8 rounded-2xl p-5">
+      <div class="mb-4 flex items-center justify-between gap-4"><div><h2 class="text-xl font-semibold">Contact inquiries</h2><p class="muted mt-1 text-sm">Review each request, update its follow-up status, or open an email reply.</p></div><button id="refresh-inquiries" class="rounded-full border border-white/10 px-3 py-1.5 text-xs uppercase tracking-[0.2em] text-gray-300 hover:bg-white/5">Refresh</button></div>
+      <p id="inquiry-status" class="muted mb-3 text-sm" aria-live="polite"></p>
+      <div class="overflow-x-auto"><table class="min-w-full text-left text-sm"><thead class="text-xs uppercase tracking-[0.2em] text-gray-400"><tr><th class="pb-3">Request</th><th class="pb-3">Contact</th><th class="pb-3">Details</th><th class="pb-3">Submitted</th><th class="pb-3">Follow-up</th></tr></thead><tbody id="inquiries-table" class="divide-y divide-white/10"></tbody></table></div>
+    </section>
+
+    <section class="panel mt-8 rounded-2xl p-5">
+      <div class="mb-4 flex items-center justify-between gap-4"><div><h2 class="text-xl font-semibold">Volunteer signups</h2><p class="muted mt-1 text-sm">Review interest and coordinate campaign participation.</p></div><button id="refresh-volunteers" class="rounded-full border border-white/10 px-3 py-1.5 text-xs uppercase tracking-[0.2em] text-gray-300 hover:bg-white/5">Refresh</button></div>
+      <p id="volunteer-admin-status" class="muted mb-3 text-sm" aria-live="polite"></p>
+      <div class="overflow-x-auto"><table class="min-w-full text-left text-sm"><thead class="text-xs uppercase tracking-[0.2em] text-gray-400"><tr><th class="pb-3">Volunteer</th><th class="pb-3">Campaign</th><th class="pb-3">Interest & availability</th><th class="pb-3">Submitted</th><th class="pb-3">Follow-up</th></tr></thead><tbody id="volunteers-table" class="divide-y divide-white/10"></tbody></table></div>
+    </section>
+  </div>
+
+  <script>
+    const state = { token: localStorage.getItem('terra_nova_session') || '' };
+    const localHosts = ['localhost', '127.0.0.1', '::1'];
+    const useLocalApiServer = location.protocol === 'file:' || (localHosts.includes(location.hostname) && location.port !== '3000');
+    const apiOrigin = useLocalApiServer ? `http://${location.hostname || 'localhost'}:3000` : location.origin;
+
+    async function api(path, options = {}) {
+      const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
+      if (state.token) headers.Authorization = 'Bearer ' + state.token;
+      const response = await fetch(`${apiOrigin}${path}`, { ...options, headers });
+      const data = await response.json();
+      return { response, data };
+    }
+
+    function setStatus(elementId, message, isError = false) {
+      const el = document.getElementById(elementId);
+      if (!el) return;
+      el.textContent = message;
+      el.style.color = isError ? '#fca5a5' : 'rgba(255,255,255,0.68)';
+    }
+
+    async function loadOverview() {
+      const result = await api('/api/admin/overview');
+      if (!result.response.ok || !result.data.summary) {
+        setStatus('admin-status', result.data?.error || 'Please log in to view admin data.', true);
+        return;
+      }
+
+      const { summary } = result.data;
+      document.getElementById('subscribers-count').textContent = summary.totalSubscribers;
+      document.getElementById('members-count').textContent = summary.totalMembers;
+      document.getElementById('users-count').textContent = summary.totalUsers;
+      document.getElementById('projects-count').textContent = summary.totalProjects;
+      loadProjects();
+      loadMembers();
+      loadSubscribers();
+      loadInquiries();
+      loadVolunteers();
+      loadContentEditorData();
+    }
+
+    async function loadProjects() {
+      const result = await api('/api/admin/projects');
+      const table = document.getElementById('projects-table');
+      if (!result.response.ok || !result.data.projects) {
+        table.innerHTML = '<tr><td colspan="6" class="py-4 text-red-400">Unable to load projects.</td></tr>';
+        return;
+      }
+
+      if (result.data.projects.length === 0) {
+        table.innerHTML = '<tr><td colspan="6" class="py-4 text-gray-400">No projects created yet.</td></tr>';
+        return;
+      }
+
+      table.innerHTML = result.data.projects.map(project => `
+        <tr class="table-row">
+          <td class="py-3 pr-4 font-medium">${project.name || 'Untitled'}</td>
+          <td class="py-3 pr-4 text-gray-300">${project.category || 'General'}</td>
+          <td class="py-3 pr-4 text-gray-300">${project.region || 'Global'}</td>
+          <td class="py-3 pr-4 text-gray-300">${project.impact || 'Impact initiative'}</td>
+          <td class="py-3 pr-4"><span class="rounded-full border border-terraGreen-400/40 bg-terraGreen-500/10 px-2 py-1 text-xs text-terraGreen-200">${project.status || 'Active'}</span></td>
+          <td class="py-3"><button data-id="${project._id}" class="delete-project rounded-full border border-red-500/40 bg-red-500/10 px-2.5 py-1.5 text-xs text-red-300 hover:bg-red-500/20">Delete</button></td>
+        </tr>
+      `).join('');
+
+      document.querySelectorAll('.delete-project').forEach(button => {
+        button.addEventListener('click', async () => {
+          const id = button.dataset.id;
+          if (!id) return;
+          const confirmDelete = window.confirm('Delete this project?');
+          if (!confirmDelete) return;
+          const deleteResult = await api(`/api/projects/${id}`, { method: 'DELETE' });
+          if (deleteResult.response.ok) {
+            setStatus('project-status-msg', deleteResult.data.message || 'Project deleted successfully.');
+            loadOverview();
+          } else {
+            setStatus('project-status-msg', deleteResult.data.error || 'Delete failed.', true);
+          }
+        });
+      });
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? '').replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[character]));
+    }
+
+    async function loadMembers() {
+      const result = await api('/api/admin/members');
+      const table = document.getElementById('members-table');
+      if (!result.response.ok) {
+        table.innerHTML = '<tr><td colspan="4" class="py-4 text-red-400">Admin login is required to view members.</td></tr>';
+        return;
+      }
+      table.innerHTML = result.data.members.map(member => `
+        <tr data-id="${escapeHtml(member._id)}">
+          <td class="py-2 pr-2"><input aria-label="Member name" class="member-name w-36 rounded-lg border border-white/10 bg-navy-950/70 px-2 py-2" value="${escapeHtml(member.name)}"></td>
+          <td class="py-2 pr-2"><input aria-label="Member email" type="email" class="member-email w-48 rounded-lg border border-white/10 bg-navy-950/70 px-2 py-2" value="${escapeHtml(member.email)}"></td>
+          <td class="py-2 pr-2"><input aria-label="Member interest" class="member-interest w-36 rounded-lg border border-white/10 bg-navy-950/70 px-2 py-2" value="${escapeHtml(member.interest || '')}"></td>
+          <td class="py-2"><div class="flex gap-2"><button data-action="save" class="rounded-lg border border-terraGreen-400/40 px-2 py-1.5 text-xs text-terraGreen-200">Save</button><button data-action="delete" class="rounded-lg border border-red-500/40 px-2 py-1.5 text-xs text-red-300">Delete</button></div></td>
+        </tr>`).join('') || '<tr><td colspan="4" class="py-4 text-gray-400">No members found.</td></tr>';
+      table.querySelectorAll('button').forEach(button => button.addEventListener('click', async () => {
+        const row = button.closest('tr');
+        const id = row.dataset.id;
+        if (button.dataset.action === 'delete') {
+          if (!window.confirm('Delete this member record?')) return;
+          const response = await api(`/api/admin/members/${encodeURIComponent(id)}`, { method: 'DELETE' });
+          setStatus('member-status', response.data.message || response.data.error, !response.response.ok);
+        } else {
+          const response = await api(`/api/admin/members/${encodeURIComponent(id)}`, { method: 'PATCH', body: JSON.stringify({ name: row.querySelector('.member-name').value, email: row.querySelector('.member-email').value, interest: row.querySelector('.member-interest').value }) });
+          setStatus('member-status', response.data.error || 'Member updated.', !response.response.ok);
+        }
+        if (button.dataset.action === 'delete' || button.dataset.action === 'save') {
+          loadMembers();
+          loadOverview();
+        }
+      }));
+    }
+
+    async function loadSubscribers() {
+      const result = await api('/api/admin/subscribers');
+      const table = document.getElementById('subscribers-table');
+      if (!result.response.ok) {
+        table.innerHTML = '<tr><td colspan="3" class="py-4 text-red-400">Admin login is required to view subscribers.</td></tr>';
+        return;
+      }
+      table.innerHTML = result.data.subscribers.map(subscriber => `
+        <tr data-id="${escapeHtml(subscriber._id)}">
+          <td class="py-2 pr-2"><input aria-label="Subscriber email" type="email" class="subscriber-email w-60 max-w-full rounded-lg border border-white/10 bg-navy-950/70 px-2 py-2" value="${escapeHtml(subscriber.email)}"></td>
+          <td class="py-2 pr-2 text-xs text-gray-400">${escapeHtml(subscriber.createdAt ? new Date(subscriber.createdAt).toLocaleDateString() : '')}</td>
+          <td class="py-2"><div class="flex gap-2"><button data-action="save" class="rounded-lg border border-terraGreen-400/40 px-2 py-1.5 text-xs text-terraGreen-200">Save</button><button data-action="delete" class="rounded-lg border border-red-500/40 px-2 py-1.5 text-xs text-red-300">Delete</button></div></td>
+        </tr>`).join('') || '<tr><td colspan="3" class="py-4 text-gray-400">No subscribers found.</td></tr>';
+      table.querySelectorAll('button').forEach(button => button.addEventListener('click', async () => {
+        const row = button.closest('tr');
+        const id = row.dataset.id;
+        if (button.dataset.action === 'delete') {
+          if (!window.confirm('Delete this subscriber?')) return;
+          const response = await api(`/api/admin/subscribers/${encodeURIComponent(id)}`, { method: 'DELETE' });
+          setStatus('subscriber-status', response.data.message || response.data.error, !response.response.ok);
+        } else {
+          const response = await api(`/api/admin/subscribers/${encodeURIComponent(id)}`, { method: 'PATCH', body: JSON.stringify({ email: row.querySelector('.subscriber-email').value }) });
+          setStatus('subscriber-status', response.data.error || 'Subscriber updated.', !response.response.ok);
+        }
+        loadSubscribers();
+        loadOverview();
+      }));
+    }
+
+    const contentState = { type: 'articles', itemId: null, authors: [], projects: [] };
+
+    function setContentType(type) {
+      contentState.type = type;
+      contentState.itemId = null;
+      document.querySelectorAll('.content-type-btn').forEach(button => {
+        const active = button.dataset.contentType === type;
+        button.classList.toggle('bg-terraGreen-500/10', active);
+        button.classList.toggle('border-terraGreen-400/50', active);
+        button.classList.toggle('text-terraGreen-200', active);
+        button.classList.toggle('border-white/10', !active);
+        button.classList.toggle('text-gray-300', !active);
+      });
+      renderContentForm();
+      loadContentTable();
+    }
+
+    function getFieldConfig() {
+      if (contentState.type === 'authors') {
+        return [
+          { name: 'name', label: 'Author name', type: 'text', required: true },
+          { name: 'slug', label: 'Slug', type: 'text', required: true },
+          { name: 'role', label: 'Role', type: 'text', required: true },
+          { name: 'photo', label: 'Photo URL', type: 'url' },
+          { name: 'bio', label: 'Bio', type: 'textarea', required: true }
+        ];
+      }
+      if (contentState.type === 'articles') {
+        return [
+          { name: 'title', label: 'Article title', type: 'text', required: true },
+          { name: 'slug', label: 'Slug', type: 'text', required: true },
+          { name: 'category', label: 'Category', type: 'text', required: true },
+          { name: 'authorId', label: 'Author', type: 'select', options: contentState.authors.map(author => ({ value: author._id, label: author.name })) },
+          { name: 'featuredImage', label: 'Featured image URL', type: 'url' },
+          { name: 'status', label: 'Status', type: 'select', options: [{ value: 'draft', label: 'Draft' }, { value: 'published', label: 'Published' }] },
+          { name: 'tags', label: 'Tags (comma separated)', type: 'text' },
+          { name: 'excerpt', label: 'Excerpt', type: 'textarea', required: true },
+          { name: 'content', label: 'Full content', type: 'textarea', required: true }
+        ];
+      }
+      if (contentState.type === 'case-studies') {
+        return [
+          { name: 'title', label: 'Case study title', type: 'text', required: true },
+          { name: 'slug', label: 'Slug', type: 'text', required: true },
+          { name: 'campaignId', label: 'Linked project (optional)', type: 'select', options: [{ value: '', label: 'None selected' }, ...contentState.projects.map(project => ({ value: project._id, label: project.name }))] },
+          { name: 'status', label: 'Status', type: 'select', options: [{ value: 'draft', label: 'Draft' }, { value: 'published', label: 'Published' }] },
+          { name: 'summary', label: 'Summary', type: 'textarea', required: true },
+          { name: 'challenge', label: 'Challenge', type: 'textarea', required: true },
+          { name: 'approach', label: 'Approach', type: 'textarea', required: true },
+          { name: 'results', label: 'Results', type: 'textarea', required: true },
+          { name: 'beforeData', label: 'Before data', type: 'textarea' },
+          { name: 'afterData', label: 'After data', type: 'textarea' }
+        ];
+      }
+      return [
+        { name: 'name', label: 'Name', type: 'text', required: true },
+        { name: 'role', label: 'Role', type: 'text', required: true },
+        { name: 'organization', label: 'Organization', type: 'text' },
+        { name: 'status', label: 'Status', type: 'select', options: [{ value: 'pending', label: 'Pending' }, { value: 'approved', label: 'Approved' }, { value: 'rejected', label: 'Rejected' }] },
+        { name: 'quote', label: 'Quote', type: 'textarea', required: true },
+        { name: 'consentGiven', label: 'Consent given by person', type: 'checkbox' }
+      ];
+    }
+
+    function renderContentForm(item = null) {
+      const fields = getFieldConfig();
+      const fieldMarkup = fields.map(field => {
+        const value = item ? (item[field.name] ?? '') : '';
+        const safeValue = typeof value === 'string' ? value : (Array.isArray(value) ? value.join(', ') : (value ?? ''));
+        const required = field.required ? 'required' : '';
+
+        if (field.type === 'textarea') {
+          return `<label class="block text-xs uppercase tracking-[0.2em] text-gray-400">${field.label}<textarea name="${field.name}" ${required} class="mt-2 min-h-[110px] w-full rounded-xl border border-white/10 bg-navy-950/70 px-3 py-2.5 outline-none focus:border-terraGreen-400">${escapeHtml(safeValue)}</textarea></label>`;
+        }
+        if (field.type === 'select') {
+          const options = field.options || [];
+          return `<label class="block text-xs uppercase tracking-[0.2em] text-gray-400">${field.label}<select name="${field.name}" ${required} class="mt-2 w-full rounded-xl border border-white/10 bg-navy-950/70 px-3 py-2.5 outline-none focus:border-terraGreen-400">${options.map(option => `<option value="${escapeHtml(option.value)}" ${String(value) === String(option.value) ? 'selected' : ''}>${escapeHtml(option.label)}</option>`).join('')}</select></label>`;
+        }
+        if (field.type === 'checkbox') {
+          return `<label class="flex items-center gap-3 pt-2 text-xs uppercase tracking-[0.2em] text-gray-400"><input type="checkbox" name="${field.name}" ${value ? 'checked' : ''} class="h-4 w-4 accent-terraGreen-400"> ${field.label}</label>`;
+        }
+        return `<label class="block text-xs uppercase tracking-[0.2em] text-gray-400">${field.label}<input name="${field.name}" type="${field.type}" value="${escapeHtml(safeValue)}" ${required} class="mt-2 w-full rounded-xl border border-white/10 bg-navy-950/70 px-3 py-2.5 outline-none focus:border-terraGreen-400" /></label>`;
+      }).join('');
+
+      const formFields = document.getElementById('content-form-fields');
+      formFields.innerHTML = fieldMarkup;
+      const form = document.getElementById('content-form');
+      form.dataset.type = contentState.type;
+      form.dataset.itemId = contentState.itemId || '';
+    }
+
+    async function loadContentEditorData() {
+      const [authorsResult, projectsResult] = await Promise.all([
+        api('/api/admin/content/authors'),
+        api('/api/admin/projects')
+      ]);
+      if (authorsResult.response.ok) contentState.authors = authorsResult.data.items || [];
+      if (projectsResult.response.ok) contentState.projects = projectsResult.data.projects || [];
+      renderContentForm();
+      loadContentTable();
+    }
+
+    async function loadContentTable() {
+      const type = contentState.type;
+      const result = await api(`/api/admin/content/${type}`);
+      const table = document.getElementById('content-table');
+      if (!result.response.ok) {
+        table.innerHTML = '<tr><td colspan="3" class="py-4 text-red-400">Unable to load content.</td></tr>';
+        return;
+      }
+      const items = result.data.items || [];
+      table.innerHTML = items.map(item => {
+        const primary = item.title || item.name || item.role || 'Untitled';
+        const status = item.status || (item.approved ? 'approved' : 'draft');
+        return `
+          <tr data-id="${escapeHtml(item._id)}">
+            <td class="py-3 pr-4 font-medium">${escapeHtml(primary)}</td>
+            <td class="py-3 pr-4 text-gray-300">${escapeHtml(status)}</td>
+            <td class="py-3"><div class="flex gap-2"><button data-action="edit-content" class="rounded-lg border border-terraGreen-400/40 px-2 py-1.5 text-xs text-terraGreen-200">Edit</button><button data-action="delete-content" class="rounded-lg border border-red-500/40 px-2 py-1.5 text-xs text-red-300">Delete</button></div></td>
+          </tr>
+        `;
+      }).join('') || '<tr><td colspan="3" class="py-4 text-gray-400">No entries yet.</td></tr>';
+
+      table.querySelectorAll('[data-action="edit-content"]').forEach(button => {
+        button.addEventListener('click', () => {
+          const row = button.closest('tr');
+          const id = row.dataset.id;
+          const item = items.find(entry => String(entry._id) === id);
+          if (!item) return;
+          contentState.itemId = id;
+          renderContentForm(item);
+          setStatus('content-status', 'Editing selected entry.', false);
+        });
+      });
+
+      table.querySelectorAll('[data-action="delete-content"]').forEach(button => {
+        button.addEventListener('click', async () => {
+          const row = button.closest('tr');
+          const id = row.dataset.id;
+          if (!id || !window.confirm('Delete this entry?')) return;
+          const response = await api(`/api/admin/content/${type}/${encodeURIComponent(id)}`, { method: 'DELETE' });
+          setStatus('content-status', response.data.message || response.data.error || 'Entry deleted.', !response.response.ok);
+          if (response.response.ok) {
+            contentState.itemId = null;
+            renderContentForm();
+            loadContentTable();
+          }
+        });
+      });
+    }
+
+    function serializeContentForm() {
+      const form = document.getElementById('content-form');
+      const data = Object.fromEntries(new FormData(form).entries());
+      const payload = { ...data };
+      Object.keys(payload).forEach(key => {
+        if (payload[key] === 'on') payload[key] = true;
+      });
+      if (contentState.type === 'articles') {
+        payload.tags = String(payload.tags || '').split(',').map(item => item.trim()).filter(Boolean);
+        payload.status = payload.status || 'draft';
+      }
+      if (contentState.type === 'case-studies') {
+        payload.status = payload.status || 'draft';
+      }
+      if (contentState.type === 'testimonials') {
+        payload.consentGiven = !!payload.consentGiven;
+        payload.status = payload.status || 'pending';
+      }
+      return payload;
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderContentForm();
+      document.querySelectorAll('.content-type-btn').forEach(button => {
+        button.addEventListener('click', () => setContentType(button.dataset.contentType));
+      });
+
+      document.getElementById('content-form').addEventListener('submit', async event => {
+        event.preventDefault();
+        const type = contentState.type;
+        const payload = serializeContentForm();
+        const method = contentState.itemId ? 'PATCH' : 'POST';
+        const path = contentState.itemId ? `/api/admin/content/${type}/${encodeURIComponent(contentState.itemId)}` : `/api/admin/content/${type}`;
+        const result = await api(path, { method, body: JSON.stringify(payload) });
+        setStatus('content-status', result.data.message || result.data.error || 'Content saved.', !result.response.ok);
+        if (result.response.ok) {
+          contentState.itemId = null;
+          renderContentForm();
+          loadContentEditorData();
+        }
+      });
+
+      document.getElementById('content-reset-btn').addEventListener('click', () => {
+        contentState.itemId = null;
+        renderContentForm();
+      });
+    });
+
+    async function loadInquiries() {
+      const result = await api('/api/admin/inquiries');
+      const table = document.getElementById('inquiries-table');
+      if (!result.response.ok) {
+        table.innerHTML = '<tr><td colspan="5" class="py-4 text-red-400">Admin login is required to view inquiries.</td></tr>';
+        return;
+      }
+      table.innerHTML = result.data.inquiries.map(inquiry => {
+        const replyHref = `mailto:${encodeURIComponent(inquiry.email)}?subject=${encodeURIComponent('Terra Nova inquiry ' + inquiry._id)}`;
+        return `
+          <tr data-id="${escapeHtml(inquiry._id)}" class="align-top">
+            <td class="py-3 pr-4"><div class="font-semibold">${escapeHtml(inquiry.name)}</div><div class="mt-1 text-xs text-gray-400">${escapeHtml(inquiry.organization || 'Independent')}</div><div class="mt-1 text-xs uppercase tracking-wider text-terraGreen-300">${escapeHtml(inquiry.plan)}</div></td>
+            <td class="py-3 pr-4"><a class="text-terraGreen-200 underline" href="${replyHref}">${escapeHtml(inquiry.email)}</a></td>
+            <td class="max-w-md whitespace-pre-wrap py-3 pr-4 text-gray-300">${escapeHtml(inquiry.message)}</td>
+            <td class="whitespace-nowrap py-3 pr-4 text-xs text-gray-400">${escapeHtml(new Date(inquiry.submittedAt).toLocaleString())}</td>
+            <td class="py-3"><div class="flex min-w-36 flex-col gap-2"><select aria-label="Inquiry follow-up status" class="inquiry-status rounded-lg border border-white/10 bg-navy-950 px-2 py-2"><option value="new" ${inquiry.status === 'new' ? 'selected' : ''}>New</option><option value="in_progress" ${inquiry.status === 'in_progress' ? 'selected' : ''}>In progress</option><option value="replied" ${inquiry.status === 'replied' ? 'selected' : ''}>Replied</option><option value="closed" ${inquiry.status === 'closed' ? 'selected' : ''}>Closed</option></select><button data-action="save-inquiry" class="rounded-lg border border-terraGreen-400/40 px-2 py-1.5 text-xs text-terraGreen-200">Save status</button></div></td>
+          </tr>`;
+      }).join('') || '<tr><td colspan="5" class="py-4 text-gray-400">No contact requests yet.</td></tr>';
+
+      table.querySelectorAll('[data-action="save-inquiry"]').forEach(button => button.addEventListener('click', async () => {
+        const row = button.closest('tr');
+        const status = row.querySelector('.inquiry-status').value;
+        const response = await api(`/api/admin/inquiries/${encodeURIComponent(row.dataset.id)}`, { method: 'PATCH', body: JSON.stringify({ status }) });
+        setStatus('inquiry-status', response.data.error || 'Follow-up status saved.', !response.response.ok);
+        if (response.response.ok) loadInquiries();
+      }));
+    }
+
+    async function loadVolunteers() {
+      const result = await api('/api/admin/volunteers');
+      const table = document.getElementById('volunteers-table');
+      if (!result.response.ok) {
+        table.innerHTML = '<tr><td colspan="5" class="py-4 text-red-400">Admin login is required to view volunteer signups.</td></tr>';
+        return;
+      }
+      table.innerHTML = result.data.volunteers.map(volunteer => `
+        <tr data-id="${escapeHtml(volunteer._id)}" class="align-top">
+          <td class="py-3 pr-4"><div class="font-semibold">${escapeHtml(volunteer.name)}</div><a class="text-xs text-terraGreen-200 underline" href="mailto:${encodeURIComponent(volunteer.email)}">${escapeHtml(volunteer.email)}</a></td>
+          <td class="py-3 pr-4 font-mono text-xs text-gray-400">${escapeHtml(volunteer.campaignId || 'General')}</td>
+          <td class="max-w-sm whitespace-pre-wrap py-3 pr-4 text-gray-300">${escapeHtml(volunteer.interest)}<div class="mt-2 text-xs text-gray-400">${escapeHtml(volunteer.availability || 'Availability not specified')}</div></td>
+          <td class="whitespace-nowrap py-3 pr-4 text-xs text-gray-400">${escapeHtml(new Date(volunteer.submittedAt).toLocaleString())}</td>
+          <td class="py-3"><div class="flex min-w-36 flex-col gap-2"><select aria-label="Volunteer follow-up status" class="volunteer-status rounded-lg border border-white/10 bg-navy-950 px-2 py-2"><option value="new" ${volunteer.status === 'new' ? 'selected' : ''}>New</option><option value="contacted" ${volunteer.status === 'contacted' ? 'selected' : ''}>Contacted</option><option value="scheduled" ${volunteer.status === 'scheduled' ? 'selected' : ''}>Scheduled</option><option value="completed" ${volunteer.status === 'completed' ? 'selected' : ''}>Completed</option><option value="closed" ${volunteer.status === 'closed' ? 'selected' : ''}>Closed</option></select><button data-action="save-volunteer" class="rounded-lg border border-terraGreen-400/40 px-2 py-1.5 text-xs text-terraGreen-200">Save status</button></div></td>
+        </tr>`).join('') || '<tr><td colspan="5" class="py-4 text-gray-400">No volunteer signups yet.</td></tr>';
+      table.querySelectorAll('[data-action="save-volunteer"]').forEach(button => button.addEventListener('click', async () => {
+        const row = button.closest('tr');
+        const result = await api(`/api/admin/volunteers/${encodeURIComponent(row.dataset.id)}`, { method: 'PATCH', body: JSON.stringify({ status: row.querySelector('.volunteer-status').value }) });
+        setStatus('volunteer-admin-status', result.data.error || 'Volunteer follow-up status saved.', !result.response.ok);
+        if (result.response.ok) loadVolunteers();
+      }));
+    }
+
+    document.getElementById('admin-login-btn').addEventListener('click', async () => {
+      const email = document.getElementById('admin-email').value.trim();
+      const password = document.getElementById('admin-password').value;
+
+      const result = await api('/api/auth/login', {
+        method: 'POST',
+        body: JSON.stringify({ email, password })
+      });
+
+      if (!result.response.ok) {
+        setStatus('admin-status', result.data.error || 'Login failed.', true);
+        return;
+      }
+
+      state.token = result.data.token;
+      localStorage.setItem('terra_nova_session', result.data.token);
+      setStatus('admin-status', 'Logged in as ' + result.data.user.name);
+      loadOverview();
+    });
+
+    document.getElementById('project-form').addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const payload = {
+        name: document.getElementById('project-name').value,
+        category: document.getElementById('project-category').value,
+        region: document.getElementById('project-region').value,
+        impact: document.getElementById('project-impact').value,
+        status: document.getElementById('project-status').value,
+        fundingGoal: Number(document.getElementById('project-funding').value || 0),
+        raised: Number(document.getElementById('project-raised').value || 0)
+      };
+
+      const result = await api('/api/projects', {
+        method: 'POST',
+        body: JSON.stringify(payload)
+      });
+
+      if (!result.response.ok) {
+        setStatus('project-status-msg', result.data.error || 'Project save failed.', true);
+        return;
+      }
+
+      setStatus('project-status-msg', result.data.message || 'Project saved successfully.');
+      document.getElementById('project-form').reset();
+      document.getElementById('project-status').value = 'Active';
+      loadOverview();
+    });
+
+    document.getElementById('member-form').addEventListener('submit', async event => {
+      event.preventDefault();
+      const result = await api('/api/admin/members', { method: 'POST', body: JSON.stringify({ name: document.getElementById('member-name').value, email: document.getElementById('member-email').value, interest: document.getElementById('member-interest').value }) });
+      setStatus('member-status', result.data.error || 'Member added.', !result.response.ok);
+      if (result.response.ok) event.currentTarget.reset();
+      loadMembers();
+      loadOverview();
+    });
+
+    document.getElementById('subscriber-form').addEventListener('submit', async event => {
+      event.preventDefault();
+      const result = await api('/api/admin/subscribers', { method: 'POST', body: JSON.stringify({ email: document.getElementById('subscriber-email').value }) });
+      setStatus('subscriber-status', result.data.error || 'Subscriber added.', !result.response.ok);
+      if (result.response.ok) event.currentTarget.reset();
+      loadSubscribers();
+      loadOverview();
+    });
+
+    document.getElementById('refresh-projects').addEventListener('click', () => loadOverview());
+    document.getElementById('refresh-members').addEventListener('click', loadMembers);
+    document.getElementById('refresh-subscribers').addEventListener('click', loadSubscribers);
+    document.getElementById('refresh-inquiries').addEventListener('click', loadInquiries);
+    document.getElementById('refresh-volunteers').addEventListener('click', loadVolunteers);
+
+    if (state.token) {
+      loadOverview();
+    } else {
+      renderContentForm();
+    }
+  </script>
+</body>
+</html>

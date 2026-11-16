@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Signing in | Terra Nova</title>
+  <style>
+    body { min-height: 100vh; margin: 0; display: grid; place-items: center; background: #050810; color: #edf4f0; font: 15px system-ui, sans-serif; }
+    main { max-width: 32rem; padding: 2rem; text-align: center; }
+    p { color: #aeb9b4; line-height: 1.6; }
+  </style>
+</head>
+<body>
+  <main>
+    <strong>TERRA NOVA</strong>
+    <p id="status" role="status" aria-live="polite">Finishing sign-in...</p>
+    <a id="return-link" href="/" hidden style="color:#c2d9b8">Return to Terra Nova</a>
+  </main>
+  <script>
+    const callbackParams = new URLSearchParams(location.hash.slice(1));
+    const callbackError = new URLSearchParams(location.search).get('error');
+    const token = callbackParams.get('terra_session');
+    if (token) {
+      localStorage.setItem('terra_nova_session', token);
+      history.replaceState(null, '', location.pathname);
+      location.replace('/');
+    } else {
+      const status = document.getElementById('status');
+      const returnLink = document.getElementById('return-link');
+      const localHosts = ['localhost', '127.0.0.1', '::1'];
+      const useLocalApiServer = location.protocol === 'file:' || (localHosts.includes(location.hostname) && location.port !== '3000');
+      const apiOrigin = useLocalApiServer ? `http://${location.hostname || 'localhost'}:3000` : location.origin;
+      returnLink.hidden = false;
+
+      if (callbackError === 'google_signin_failed') {
+        status.textContent = 'Google sign-in could not be completed. Check the Google OAuth settings and authorized redirect URI, then try again.';
+      } else if (!callbackError) {
+        fetch(`${apiOrigin}/api/auth/providers`, { headers: { Accept: 'application/json' } })
+          .then(async response => {
+            const contentType = response.headers.get('content-type') || '';
+            if (!contentType.includes('application/json')) throw new Error('The sign-in service returned an invalid response.');
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.error || 'The sign-in service could not be checked.');
+            status.textContent = data.google
+              ? 'Sign-in did not complete. Return to Terra Nova and try again.'
+              : 'Google sign-in is not configured. Set GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, and GOOGLE_REDIRECT_URI in the app server environment, then restart the server.';
+          })
+          .catch(error => {
+            status.textContent = `${error.message} Make sure the Terra Nova app server is running.`;
+          });
+      } else {
+        status.textContent = 'Sign-in did not complete. Return to Terra Nova and try again.';
+      }
+    }
+  </script>
+</body>
+</html>

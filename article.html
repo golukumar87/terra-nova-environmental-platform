@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Terra Nova Journal | Article</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { background: #050810; color: white; }
+    .glass { background: rgba(255,255,255,0.025); border: 1px solid rgba(255,255,255,0.1); }
+    .article-copy p { margin-top: 1rem; font-size: 1rem; line-height: 1.9; color: rgba(255,255,255,0.8); }
+    .article-copy h2 { margin-top: 2rem; font-family: 'Cinzel', serif; font-size: 1.8rem; line-height: 1.2; }
+    .tag { border: 1px solid rgba(255,255,255,0.18); border-radius: 9999px; padding: 6px 10px; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; }
+  </style>
+</head>
+<body>
+  <header class="border-b border-white/10 px-5 py-5 sm:px-8">
+    <div class="mx-auto flex max-w-7xl items-center justify-between gap-4">
+      <a href="/" class="text-xs font-bold tracking-[0.25em]">TERRA NOVA</a>
+      <nav class="flex items-center gap-5 text-sm text-gray-300">
+        <a href="/blog.html" class="hover:text-white">Journal</a>
+        <a href="/campaigns.html" class="hover:text-white">Campaigns</a>
+        <a href="/stories.html" class="hover:text-white">Impact stories</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="mx-auto max-w-5xl px-5 py-16 sm:px-8 sm:py-24">
+    <a href="/blog.html" class="text-xs uppercase tracking-[0.16em] text-[#c2d9b8]">← Back to journal</a>
+    <div id="article-status" class="mt-8 text-sm text-gray-400" role="status" aria-live="polite">Loading article...</div>
+    <article id="article-shell" class="hidden mt-8">
+      <div class="mb-6 flex flex-wrap gap-2" id="article-tags"></div>
+      <p id="article-category" class="text-xs uppercase tracking-[0.3em] text-[#a5c49a]"></p>
+      <h1 id="article-title" class="mt-4 font-['Cinzel'] text-4xl uppercase leading-tight sm:text-6xl"></h1>
+      <div class="mt-6 flex flex-wrap items-center justify-between gap-4 text-sm text-gray-400">
+        <div id="article-author"></div>
+        <div id="article-date"></div>
+      </div>
+      <img id="article-image" alt="" class="mt-10 aspect-[16/9] w-full rounded-2xl object-cover border border-white/10" loading="eager" />
+      <div id="article-content" class="article-copy mt-10"></div>
+    </article>
+  </main>
+
+  <script>
+    const slug = new URLSearchParams(location.search).get('slug') || location.pathname.split('/').filter(Boolean).pop();
+    const localHosts = ['localhost', '127.0.0.1', '::1'];
+    const useLocalApiServer = location.protocol === 'file:' || (localHosts.includes(location.hostname) && location.port !== '3000');
+    const apiOrigin = useLocalApiServer ? `http://${location.hostname || 'localhost'}:3000` : location.origin;
+    const articleStatus = document.getElementById('article-status');
+    const articleShell = document.getElementById('article-shell');
+    const articleTags = document.getElementById('article-tags');
+
+    function escapeHtml(value) {
+      return String(value ?? '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
+    }
+
+    async function loadArticle() {
+      try {
+        const response = await fetch(`${apiOrigin}/api/articles/${encodeURIComponent(slug)}`, { headers: { Accept: 'application/json' } });
+        const contentType = response.headers.get('content-type') || '';
+        if (!contentType.includes('application/json')) throw new Error(`The journal API at ${apiOrigin} returned a page instead of JSON.`);
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || 'Article could not be loaded.');
+        const article = data.article;
+        if (!article) throw new Error('Article not found.');
+
+        document.title = `${article.title} | Terra Nova Journal`;
+        document.getElementById('article-category').textContent = article.category;
+        document.getElementById('article-title').textContent = article.title;
+        document.getElementById('article-date').textContent = new Date(article.publishedAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+        document.getElementById('article-author').textContent = `By ${article.author?.name || 'Terra Nova'}`;
+        document.getElementById('article-image').src = article.featuredImage || 'assets/hero_bg.webp';
+        document.getElementById('article-image').alt = article.title;
+        articleTags.innerHTML = (article.tags || []).map(tag => `<span class="tag">${escapeHtml(tag)}</span>`).join('');
+        document.getElementById('article-content').innerHTML = article.content.replace(/\n{2,}/g, '</p><p>').replace(/^(.*)$/s, '<p>$1</p>');
+        articleShell.classList.remove('hidden');
+        articleStatus.textContent = '';
+      } catch (error) {
+        articleStatus.textContent = error.message || 'The article could not be loaded.';
+        articleStatus.classList.add('text-red-300');
+      }
+    }
+
+    loadArticle();
+  </script>
+</body>
+</html>

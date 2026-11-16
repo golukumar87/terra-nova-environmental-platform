@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Campaigns | Terra Nova</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-[#050810] font-['Plus_Jakarta_Sans'] text-white">
+  <header class="border-b border-white/10 px-5 py-5 sm:px-8">
+    <div class="mx-auto flex max-w-7xl items-center justify-between gap-4">
+      <a href="/" class="text-xs font-bold tracking-[0.25em]">TERRA NOVA</a>
+      <nav class="flex items-center gap-5 text-sm text-gray-300"><a href="/" class="hover:text-white">Home</a><a href="/admin.html" class="hover:text-white">Admin</a></nav>
+    </div>
+  </header>
+  <main class="mx-auto max-w-7xl px-5 py-16 sm:px-8 sm:py-24">
+    <div class="max-w-3xl">
+      <p class="text-xs uppercase tracking-[0.3em] text-[#a5c49a]">Terra Nova initiatives</p>
+      <h1 class="mt-4 font-['Cinzel'] text-4xl uppercase leading-tight sm:text-6xl">Campaigns with a place and a purpose</h1>
+      <p class="mt-5 max-w-2xl text-sm leading-relaxed text-gray-300">Explore active initiatives, their stated goals, and ways to support or volunteer.</p>
+    </div>
+    <div id="campaign-status" class="mt-10 text-sm text-gray-400" role="status" aria-live="polite">Loading campaigns...</div>
+    <section id="campaign-list" class="mt-6 grid gap-5 md:grid-cols-2 xl:grid-cols-3" aria-label="Campaigns"></section>
+  </main>
+  <script>
+    const localHosts = ['localhost', '127.0.0.1', '::1'];
+    const useLocalApiServer = location.protocol === 'file:' || (localHosts.includes(location.hostname) && location.port !== '3000');
+    const apiOrigin = useLocalApiServer ? `http://${location.hostname || 'localhost'}:3000` : location.origin;
+
+    function apiUrl(path) {
+      return `${apiOrigin}${path}`;
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? '').replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[character]));
+    }
+
+    async function loadCampaigns() {
+      const status = document.getElementById('campaign-status');
+      try {
+        const response = await fetch(apiUrl('/api/campaigns'), { headers: { Accept: 'application/json' } });
+        const contentType = response.headers.get('content-type') || '';
+        if (!contentType.includes('application/json')) {
+          throw new Error(`Campaign API at ${apiOrigin} returned a page instead of JSON.`);
+        }
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || 'Campaigns could not be loaded.');
+        const campaigns = data.campaigns || [];
+        document.getElementById('campaign-list').innerHTML = campaigns.map(campaign => {
+          const goal = Number(campaign.fundingGoal || 0);
+          const raised = Number(campaign.raised || 0);
+          const progress = goal ? Math.min(100, Math.max(0, raised / goal * 100)) : 0;
+          return `<article class="border border-white/10 bg-white/[0.025] p-6">
+            <p class="text-[10px] uppercase tracking-[0.22em] text-[#a5c49a]">${escapeHtml(campaign.category || 'Terra Nova campaign')}</p>
+            <h2 class="mt-3 font-['Cinzel'] text-2xl">${escapeHtml(campaign.name || 'Untitled campaign')}</h2>
+            <p class="mt-2 text-sm text-gray-400">${escapeHtml(campaign.region || 'Global')} · ${escapeHtml(campaign.status || 'Active')}</p>
+            <p class="mt-5 min-h-12 text-sm leading-relaxed text-gray-300">${escapeHtml(campaign.impact || 'Learn about the campaign and its goals.')}</p>
+            <div class="mt-6 flex justify-between gap-4 text-xs text-gray-400"><span>Raised $${raised.toLocaleString()}</span><span>Goal $${goal.toLocaleString()}</span></div>
+            <div class="mt-2 h-1.5 overflow-hidden rounded-full bg-white/10"><div class="h-full bg-[#8ba77b]" style="width:${progress}%"></div></div>
+            <a href="campaign.html?id=${encodeURIComponent(campaign._id)}" class="mt-6 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.16em] text-[#c2d9b8] hover:text-white">Campaign details <span aria-hidden="true">→</span></a>
+          </article>`;
+        }).join('');
+        status.textContent = campaigns.length ? `${campaigns.length} campaigns` : 'No campaigns are available yet.';
+      } catch (error) {
+        status.textContent = error.message;
+        status.classList.add('text-red-300');
+      }
+    }
+
+    loadCampaigns();
+  </script>
+</body>
+</html>

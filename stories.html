@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Terra Nova Impact Stories</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { background: #050810; color: white; }
+    .glass { background: rgba(255,255,255,0.025); border: 1px solid rgba(255,255,255,0.1); }
+  </style>
+</head>
+<body>
+  <header class="border-b border-white/10 px-5 py-5 sm:px-8">
+    <div class="mx-auto flex max-w-7xl items-center justify-between gap-4">
+      <a href="/" class="text-xs font-bold tracking-[0.25em]">TERRA NOVA</a>
+      <nav class="flex items-center gap-5 text-sm text-gray-300">
+        <a href="/blog.html" class="hover:text-white">Journal</a>
+        <a href="/campaigns.html" class="hover:text-white">Campaigns</a>
+        <a href="/" class="hover:text-white">Home</a>
+      </nav>
+    </div>
+  </header>
+  <main class="mx-auto max-w-7xl px-5 py-16 sm:px-8 sm:py-24">
+    <div class="max-w-3xl">
+      <p class="text-xs uppercase tracking-[0.3em] text-[#a5c49a]">Case studies & testimonials</p>
+      <h1 class="mt-4 font-['Cinzel'] text-4xl uppercase leading-tight sm:text-6xl">Client and community impact</h1>
+      <p class="mt-5 max-w-2xl text-sm leading-relaxed text-gray-300">Project results, before-and-after data, and stories that reflect the people behind the work.</p>
+    </div>
+
+    <div id="stories-status" class="mt-8 text-sm text-gray-400" role="status" aria-live="polite">Loading impact stories...</div>
+    <div id="stories-grid" class="mt-8 grid gap-6 xl:grid-cols-2"></div>
+
+    <section class="mt-16">
+      <h2 class="font-['Cinzel'] text-3xl uppercase">Community testimonials</h2>
+      <div id="testimonial-grid" class="mt-8 grid gap-6 md:grid-cols-3"></div>
+    </section>
+  </main>
+
+  <script>
+    const localHosts = ['localhost', '127.0.0.1', '::1'];
+    const useLocalApiServer = location.protocol === 'file:' || (localHosts.includes(location.hostname) && location.port !== '3000');
+    const apiOrigin = useLocalApiServer ? `http://${location.hostname || 'localhost'}:3000` : location.origin;
+
+    function apiUrl(path) {
+      return `${apiOrigin}${path}`;
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
+    }
+
+    async function readApiResponse(response, endpoint) {
+      const contentType = response.headers.get('content-type') || '';
+      if (!contentType.includes('application/json')) {
+        throw new Error(`${endpoint} at ${apiOrigin} returned a page instead of JSON. Make sure the Terra Nova server is running.`);
+      }
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || `${endpoint} could not be loaded.`);
+      return data;
+    }
+
+    async function loadStoryData() {
+      const storiesStatus = document.getElementById('stories-status');
+      try {
+        const [storiesResponse, testimonialsResponse] = await Promise.all([
+          fetch(apiUrl('/api/case-studies'), { headers: { Accept: 'application/json' } }),
+          fetch(apiUrl('/api/testimonials'), { headers: { Accept: 'application/json' } })
+        ]);
+        const [storiesData, testimonialsData] = await Promise.all([
+          readApiResponse(storiesResponse, 'Impact stories'),
+          readApiResponse(testimonialsResponse, 'Testimonials')
+        ]);
+
+        const caseStudies = storiesData.caseStudies || [];
+        const testimonials = testimonialsData.testimonials || [];
+
+        const storyGrid = document.getElementById('stories-grid');
+        storyGrid.innerHTML = caseStudies.map(item => `
+          <article class="glass rounded-2xl p-6">
+            <div class="flex items-center justify-between gap-3">
+              <span class="text-[10px] uppercase tracking-[0.22em] text-[#a5c49a]">Case study</span>
+              <span class="text-[10px] uppercase tracking-[0.18em] text-gray-500">${item.status || 'Published'}</span>
+            </div>
+            <h3 class="mt-4 font-['Cinzel'] text-3xl">${escapeHtml(item.title)}</h3>
+            <p class="mt-4 text-sm leading-relaxed text-gray-300">${escapeHtml(item.summary)}</p>
+            <div class="mt-6 grid gap-4 md:grid-cols-2">
+              <div class="rounded-xl bg-white/[0.02] border border-white/10 p-4">
+                <p class="text-[10px] uppercase tracking-[0.2em] text-gray-400">Before</p>
+                <p class="mt-2 text-sm text-gray-300">${escapeHtml(item.beforeData || 'Baseline data not yet published.')}</p>
+              </div>
+              <div class="rounded-xl bg-white/[0.02] border border-white/10 p-4">
+                <p class="text-[10px] uppercase tracking-[0.2em] text-gray-400">After</p>
+                <p class="mt-2 text-sm text-gray-300">${escapeHtml(item.afterData || 'Updated results not yet published.')}</p>
+              </div>
+            </div>
+            <div class="mt-6 text-sm text-gray-300">
+              <p><strong>Challenge:</strong> ${escapeHtml(item.challenge || 'Context not added yet.')}</p>
+              <p class="mt-3"><strong>Approach:</strong> ${escapeHtml(item.approach || 'Plan details pending.')}</p>
+              <p class="mt-3"><strong>Results:</strong> ${escapeHtml(item.results || 'Impact metrics pending.')}</p>
+            </div>
+            <a href="/impact-story.html?slug=${encodeURIComponent(item.slug)}" class="mt-6 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.16em] text-[#c2d9b8]">Read full story <span aria-hidden="true">→</span></a>
+          </article>
+        `).join('') || '<article class="glass rounded-2xl p-6 text-gray-300">No impact stories are published yet.</article>';
+
+        const testimonialGrid = document.getElementById('testimonial-grid');
+        testimonialGrid.innerHTML = testimonials.map(item => `
+          <article class="glass rounded-2xl p-6">
+            <p class="text-sm leading-relaxed text-gray-200">“${escapeHtml(item.quote)}”</p>
+            <div class="mt-6 border-t border-white/10 pt-4">
+              <p class="font-semibold text-white">${escapeHtml(item.name)}</p>
+              <p class="text-xs text-gray-400">${escapeHtml(item.role)} · ${escapeHtml(item.organization || 'Community partner')}</p>
+            </div>
+          </article>
+        `).join('') || '<article class="glass rounded-2xl p-6 text-gray-300">No approved testimonials are available yet.</article>';
+
+        storiesStatus.textContent = `${caseStudies.length} case studies and ${testimonials.length} testimonials available.`;
+      } catch (error) {
+        storiesStatus.textContent = error instanceof TypeError
+          ? `Cannot reach the Terra Nova API at ${apiOrigin}. Start the app server with "npm start", then reload this page.`
+          : error.message || 'Could not load impact stories.';
+        storiesStatus.classList.add('text-red-300');
+      }
+    }
+
+    loadStoryData();
+  </script>
+</body>
+</html>

@@ -1,0 +1,1845 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TERRA NOVA — Natural Intelligence. Real Change.</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="preconnect" href="https://unpkg.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@300;400;500;600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@1,400;1,500&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- GSAP for smooth scroll and animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+    <!-- Three.js & OrbitControls for 3D WebGL Earth Globe -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js" defer></script>
+    <!-- Leaflet.js for Live Interactive Map Layer -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" defer></script>
+    <!-- FontAwesome icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        navy: {
+                            950: '#050810',
+                            900: '#080c14',
+                            800: '#0f172a',
+                            700: '#1e293b'
+                        },
+                        terraGreen: {
+                            600: '#3f5734',
+                            500: '#4d6840',
+                            400: '#638453',
+                            300: '#8ba77b'
+                        },
+                        sandLight: '#f4f6f8'
+                    },
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        editorial: ['"Cinzel"', 'serif'],
+                        serifQuote: ['"Playfair Display"', 'serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="style.css?v=perf-a11y-20261002">
+</head>
+<body class="bg-navy-950 text-white font-sans antialiased overflow-x-hidden selection:bg-terraGreen-500 selection:text-white">
+
+    <!-- Custom Glowing Cursor -->
+    <div class="cursor-dot hidden md:block" id="cursor-dot"></div>
+    <div class="cursor-ring hidden md:block" id="cursor-ring"></div>
+
+    <a href="#hero" class="skip-link">Skip to main content</a>
+
+    <!-- HEADER / NAVIGATION -->
+    <header id="main-header" class="fixed top-0 left-0 right-0 z-50 transition-all duration-500 py-6 px-6 lg:px-12 backdrop-blur-sm bg-black/10 border-b border-white/5">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <!-- Brand Logo (Swaps to User Avatar when logged in) -->
+            <a href="javascript:void(0)" onclick="handleBrandLogoClick()" class="flex items-center gap-3 group relative" id="brand-logo-btn" title="TERRA NOVA / User Profile">
+                <!-- Default TERRA NOVA Icon -->
+                <div id="brand-logo-icon" class="w-9 h-9 rounded-full border border-white/30 flex items-center justify-center transition-all duration-300 group-hover:border-terraGreen-400 group-hover:bg-terraGreen-500/20">
+                    <svg class="w-5 h-5 text-white transition-transform duration-500 group-hover:rotate-45" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <circle cx="12" cy="12" r="9" />
+                        <path d="M12 3v18M12 12c-3.5 0-6-2.5-6-6M12 12c3.5 0 6 2.5 6 6" />
+                    </svg>
+                </div>
+                <!-- User Profile Photo Avatar (Hidden when logged out, visible when logged in) -->
+                <div id="user-avatar-container" class="hidden w-9 h-9 rounded-full border-2 border-terraGreen-400 overflow-hidden shadow-lg shadow-terraGreen-500/30 transition-transform duration-300 hover:scale-110">
+                    <img id="user-avatar-img" src="" alt="User Avatar" loading="lazy" decoding="async" class="w-full h-full object-cover">
+                </div>
+                <span id="brand-logo-text" class="font-sans text-sm md:text-base font-semibold tracking-[0.25em] text-white">TERRA NOVA</span>
+            </a>
+
+            <!-- Desktop Nav Links -->
+            <nav class="hidden xl:flex items-center space-x-7 text-xs font-medium tracking-widest text-gray-300 uppercase">
+                <a href="#mission" class="hover:text-white transition-colors py-1 relative group whitespace-nowrap">
+                    Our Mission
+                    <span class="absolute bottom-0 left-0 w-0 h-[1px] bg-terraGreen-400 transition-all duration-300 group-hover:w-full"></span>
+                </a>
+                <a href="#solutions" class="hover:text-white transition-colors py-1 relative group whitespace-nowrap">
+                    Solutions
+                    <span class="absolute bottom-0 left-0 w-0 h-[1px] bg-terraGreen-400 transition-all duration-300 group-hover:w-full"></span>
+                </a>
+                <a href="#impact" class="hover:text-white transition-colors py-1 relative group whitespace-nowrap">
+                    Impact
+                    <span class="absolute bottom-0 left-0 w-0 h-[1px] bg-terraGreen-400 transition-all duration-300 group-hover:w-full"></span>
+                </a>
+                <a href="/stories.html" class="hover:text-white transition-colors py-1 relative group whitespace-nowrap">
+                    Stories
+                    <span class="absolute bottom-0 left-0 w-0 h-[1px] bg-terraGreen-400 transition-all duration-300 group-hover:w-full"></span>
+                </a>
+                <a href="/blog.html" class="hover:text-white transition-colors py-1 relative group whitespace-nowrap">
+                    Journal
+                    <span class="absolute bottom-0 left-0 w-0 h-[1px] bg-terraGreen-400 transition-all duration-300 group-hover:w-full"></span>
+                </a>
+                <a href="/campaigns.html" class="hover:text-white transition-colors py-1 relative group whitespace-nowrap">
+                    Campaigns
+                    <span class="absolute bottom-0 left-0 w-0 h-[1px] bg-terraGreen-400 transition-all duration-300 group-hover:w-full"></span>
+                </a>
+                <a href="#about" class="hover:text-white transition-colors py-1 relative group whitespace-nowrap">
+                    About
+                    <span class="absolute bottom-0 left-0 w-0 h-[1px] bg-terraGreen-400 transition-all duration-300 group-hover:w-full"></span>
+                </a>
+                <a href="#contact-request" class="hover:text-white transition-colors py-1 relative group whitespace-nowrap">
+                    Contact
+                    <span class="absolute bottom-0 left-0 w-0 h-[1px] bg-terraGreen-400 transition-all duration-300 group-hover:w-full"></span>
+                </a>
+                <a href="#careers" class="hover:text-white transition-colors py-1 relative group whitespace-nowrap">
+                    Careers
+                    <span class="absolute bottom-0 left-0 w-0 h-[1px] bg-terraGreen-400 transition-all duration-300 group-hover:w-full"></span>
+                </a>
+            </nav>
+
+            <!-- Right Action Buttons (100% UNIFIED UNIFORM PILL DESIGN) -->
+            <div class="flex items-center space-x-2 z-50 relative pointer-events-auto shrink-0">
+                <!-- Language Selector Dropdown -->
+                <div class="relative">
+                    <button id="lang-btn" type="button" aria-controls="lang-dropdown" aria-expanded="false" onclick="toggleLangDropdown(event)" class="px-3 py-2 rounded-full border border-white/30 hover:border-white hover:bg-white/10 backdrop-blur-md text-xs font-medium tracking-widest text-white uppercase transition-all duration-300 flex items-center gap-1.5 whitespace-nowrap cursor-pointer" title="Select Language">
+                        <span id="current-lang-icon">🌐</span>
+                        <span id="current-lang-text">EN</span>
+                        <span class="text-[9px] text-gray-400">▼</span>
+                    </button>
+                    <!-- Language Dropdown Menu -->
+                    <div id="lang-dropdown" class="hidden absolute right-0 mt-2 w-36 bg-navy-950/95 border border-white/20 rounded-xl shadow-2xl p-1.5 backdrop-blur-xl z-50 text-xs font-mono">
+                        <button onclick="setLanguage('en')" class="w-full text-left px-3 py-1.5 rounded-lg hover:bg-white/10 flex items-center gap-2 text-white cursor-pointer">
+                            <span>🇬🇧</span> <span>English</span>
+                        </button>
+                        <button onclick="setLanguage('hi')" class="w-full text-left px-3 py-1.5 rounded-lg hover:bg-white/10 flex items-center gap-2 text-white cursor-pointer">
+                            <span>🇮🇳</span> <span>हिन्दी</span>
+                        </button>
+                        <button onclick="setLanguage('es')" class="w-full text-left px-3 py-1.5 rounded-lg hover:bg-white/10 flex items-center gap-2 text-white cursor-pointer">
+                            <span>🇪🇸</span> <span>Español</span>
+                        </button>
+                        <button onclick="setLanguage('fr')" class="w-full text-left px-3 py-1.5 rounded-lg hover:bg-white/10 flex items-center gap-2 text-white cursor-pointer">
+                            <span>🇫🇷</span> <span>Français</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Soundscape Ambient Player Toggle -->
+                <div class="relative hidden sm:block">
+                    <button id="soundscape-btn" type="button" aria-controls="soundscape-dropdown" aria-expanded="false" onclick="toggleSoundscapeDropdown(event)" class="px-3 py-2 rounded-full border border-white/30 hover:border-white hover:bg-white/10 backdrop-blur-md text-xs font-medium tracking-widest text-white uppercase transition-all duration-300 flex items-center gap-1.5 whitespace-nowrap cursor-pointer" title="Environmental Soundscapes">
+                        <span id="sound-icon">🔈</span>
+                        <span id="sound-text">SOUNDSCAPE</span>
+                    </button>
+                    <!-- Soundscape Control Dropdown -->
+                    <div id="soundscape-dropdown" class="hidden absolute right-0 mt-2 w-56 bg-navy-950/95 border border-white/20 rounded-xl shadow-2xl p-3.5 backdrop-blur-xl z-50 text-xs space-y-3 font-sans">
+                        <div class="flex justify-between items-center border-b border-white/10 pb-2">
+                            <span class="text-[11px] font-bold uppercase tracking-wider text-terraGreen-400 font-mono">NATURE SOUNDS</span>
+                            <span id="sound-status-label" class="text-[10px] text-gray-400 font-mono">OFF</span>
+                        </div>
+                        <div class="space-y-1.5">
+                            <button onclick="selectSoundscapeTrack('rainforest')" class="sound-track-btn w-full text-left px-2.5 py-1.5 rounded-lg hover:bg-white/10 flex items-center justify-between text-gray-300 text-xs cursor-pointer active" data-track="rainforest">
+                                <span>🌲 Rainforest Birds</span>
+                                <span class="track-indicator text-terraGreen-400 text-xs">●</span>
+                            </button>
+                            <button onclick="selectSoundscapeTrack('ocean')" class="sound-track-btn w-full text-left px-2.5 py-1.5 rounded-lg hover:bg-white/10 flex items-center justify-between text-gray-300 text-xs cursor-pointer" data-track="ocean">
+                                <span>🌊 Ocean Waves</span>
+                                <span class="track-indicator hidden text-terraGreen-400 text-xs">●</span>
+                            </button>
+                            <button onclick="selectSoundscapeTrack('wind')" class="sound-track-btn w-full text-left px-2.5 py-1.5 rounded-lg hover:bg-white/10 flex items-center justify-between text-gray-300 text-xs cursor-pointer" data-track="wind">
+                                <span>🌀 Wind Turbine</span>
+                                <span class="track-indicator hidden text-terraGreen-400 text-xs">●</span>
+                            </button>
+                        </div>
+                        <div class="pt-2 border-t border-white/10 space-y-1">
+                            <div class="flex justify-between text-[10px] text-gray-400 font-mono">
+                                <span>VOLUME</span>
+                                <span id="sound-vol-val">60%</span>
+                            </div>
+                            <input type="range" id="sound-volume" aria-label="Soundscape volume" min="0" max="100" value="60" oninput="setSoundscapeVolume(this.value)" class="w-full accent-terraGreen-400 h-1 bg-white/20 rounded-lg">
+                        </div>
+                        <button id="soundscape-play-toggle" onclick="toggleSoundscapePlay()" class="w-full py-2 rounded-lg bg-terraGreen-500 hover:bg-terraGreen-400 text-white font-bold text-xs uppercase tracking-wider transition-all cursor-pointer text-center">
+                            ▶ PLAY AMBIENCE
+                        </button>
+                    </div>
+                </div>
+
+                <!-- User Login / Profile Button -->
+                <button id="auth-header-btn" onclick="openAuthModal('login')" class="px-4 py-2 rounded-full border border-white/30 hover:border-white hover:bg-white/10 backdrop-blur-md text-xs font-medium tracking-widest text-white uppercase transition-all duration-300 flex items-center gap-1.5 whitespace-nowrap cursor-pointer">
+                    <span id="auth-btn-icon">🔑</span>
+                    <span id="auth-btn-text">LOGIN</span>
+                </button>
+
+                <!-- Theme Accent Switcher Button -->
+                <button id="theme-btn" onclick="toggleTheme()" class="px-4 py-2 rounded-full border border-white/30 hover:border-white hover:bg-white/10 backdrop-blur-md text-xs font-medium tracking-widest text-white uppercase transition-all duration-300 flex items-center gap-1.5 whitespace-nowrap cursor-pointer" title="Toggle Theme">
+                    <span id="theme-icon">🌙</span>
+                    <span id="theme-text">DARK</span>
+                </button>
+
+                <!-- Join Movement Button -->
+                <button onclick="openMovementModal()" class="px-5 py-2 rounded-full border border-white/30 hover:border-white hover:bg-white/10 backdrop-blur-md text-xs font-medium tracking-widest text-white uppercase transition-all duration-300 flex items-center gap-2 group whitespace-nowrap cursor-pointer">
+                    <span id="nav-join-text">Join Movement</span>
+                    <span class="transition-transform duration-300 group-hover:translate-x-1">→</span>
+                </button>
+            </div>
+
+            <!-- Mobile Hamburger Menu Button -->
+            <button id="mobile-menu-btn" type="button" onclick="toggleMobileMenu()" class="md:hidden text-white p-2 focus:outline-none" aria-label="Toggle navigation" aria-controls="mobile-menu" aria-expanded="false">
+                <i class="fa-solid fa-bars text-xl" id="menu-icon"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Nav Menu Overlay -->
+        <div id="mobile-menu" class="hidden md:hidden fixed inset-0 top-[73px] bg-navy-950/95 backdrop-blur-xl flex flex-col p-8 space-y-6 text-sm tracking-widest uppercase border-t border-white/10 z-40 transition-all duration-300">
+            <a href="#mission" onclick="toggleMobileMenu()" class="text-gray-300 hover:text-white py-2 border-b border-white/5">Our Mission</a>
+            <a href="#solutions" onclick="toggleMobileMenu()" class="text-gray-300 hover:text-white py-2 border-b border-white/5">Solutions</a>
+            <a href="#impact" onclick="toggleMobileMenu()" class="text-gray-300 hover:text-white py-2 border-b border-white/5">Impact</a>
+            <a href="/stories.html" onclick="toggleMobileMenu()" class="text-gray-300 hover:text-white py-2 border-b border-white/5">Stories</a>
+            <a href="/blog.html" onclick="toggleMobileMenu()" class="text-gray-300 hover:text-white py-2 border-b border-white/5">Journal</a>
+            <a href="/campaigns.html" onclick="toggleMobileMenu()" class="text-gray-300 hover:text-white py-2 border-b border-white/5">Campaigns</a>
+            <a href="#about" onclick="toggleMobileMenu()" class="text-gray-300 hover:text-white py-2 border-b border-white/5">About</a>
+            <a href="#contact-request" onclick="toggleMobileMenu()" class="text-gray-300 hover:text-white py-2 border-b border-white/5">Contact</a>
+            <a href="#careers" onclick="toggleMobileMenu()" class="text-gray-300 hover:text-white py-2 border-b border-white/5">Careers</a>
+            <button onclick="toggleMobileMenu(); openMovementModal();" class="mt-4 w-full py-3 rounded-full border border-white/40 text-center text-xs uppercase tracking-widest font-medium text-white bg-terraGreen-500/20">
+                Join the Movement →
+            </button>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section id="hero" class="relative min-h-screen flex items-center justify-between px-6 lg:px-16 pt-28 pb-12 overflow-hidden bg-navy-950">
+        <!-- Parallax & Rotating Floating Landscape Container -->
+        <div id="hero-bg-wrapper" class="absolute inset-0 z-0 overflow-hidden">
+            <!-- Continuous Rotating & Floating Background Image -->
+            <img id="hero-bg-img" src="assets/hero_bg.webp" alt="Terra Nova Floating Landscape" fetchpriority="high" decoding="async" class="w-full h-full object-cover object-center scale-110 hero-animating-bg">
+            <!-- Background Video Loop Layer for live video motion -->
+            <video id="hero-bg-video" loop muted playsinline preload="none" poster="assets/hero_bg.webp" data-lazy-video data-autoplay="true" class="absolute inset-0 w-full h-full object-cover opacity-80 mix-blend-screen pointer-events-none hero-animating-bg">
+                <source data-src="assets/hero_video.mp4" type="video/mp4">
+            </video>
+            <!-- Subtle Vignette / Gradient overlays for contrast and luxury aesthetic -->
+            <div class="absolute inset-0 bg-gradient-to-r from-navy-950/90 via-navy-950/40 to-transparent pointer-events-none"></div>
+            <div class="absolute inset-0 bg-gradient-to-t from-navy-950 via-transparent to-navy-950/60 pointer-events-none"></div>
+            <div class="absolute inset-0 bg-black/20 pointer-events-none"></div>
+        </div>
+
+        <div class="relative z-10 max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-8 items-center min-h-[80vh]">
+            <!-- Hero Left Copy Content -->
+            <div class="lg:col-span-8 flex flex-col justify-center space-y-6 pt-10">
+                <!-- Small Uppercase Tag -->
+                <div class="hero-fade inline-flex items-center space-x-3 text-xs tracking-[0.3em] text-gray-300 uppercase font-medium">
+                    <span class="w-8 h-[1px] bg-terraGreen-400"></span>
+                    <span>A CLEANER PLANET IS A BRIGHTER TOMORROW</span>
+                </div>
+
+                <!-- Main Headline -->
+                <h1 id="hero-headline" class="hero-fade font-editorial text-4xl sm:text-6xl lg:text-7xl xl:text-8xl tracking-[0.04em] leading-[1.05] text-white uppercase font-light drop-shadow-lg">
+                    NATURAL<br>
+                    INTELLIGENCE.<br>
+                    <span class="text-white/95">REAL CHANGE.</span>
+                </h1>
+
+                <!-- Supporting Description Paragraph -->
+                <p id="hero-paragraph" class="hero-fade text-base sm:text-lg text-gray-300 max-w-xl font-light leading-relaxed">
+                    Innovative solutions for a healthier planet.<br class="hidden sm:inline">
+                    Cleaner energy. Greener communities.<br class="hidden sm:inline">
+                    A more sustainable future.
+                </p>
+
+                <!-- Action CTA Buttons -->
+                <div class="hero-fade flex flex-wrap items-center gap-5 pt-4">
+                    <!-- Primary Green Filled Pill Button -->
+                    <a href="#solutions" class="px-8 py-3.5 rounded-full bg-terraGreen-500 hover:bg-terraGreen-400 text-white text-xs uppercase tracking-widest font-semibold transition-all duration-300 shadow-lg shadow-terraGreen-600/30 flex items-center gap-3 group">
+                        <span>Explore Our Impact</span>
+                        <span class="transition-transform duration-300 group-hover:translate-x-1.5">→</span>
+                    </a>
+
+                    <!-- Secondary Play Story Button -->
+                    <button onclick="openVideoModal()" class="flex items-center gap-3 px-4 py-2.5 rounded-full text-xs uppercase tracking-widest font-medium text-white/90 hover:text-white transition-all duration-300 group">
+                        <div class="w-10 h-10 rounded-full border border-white/40 flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:border-white group-hover:bg-white/20">
+                            <i class="fa-solid fa-play text-xs text-white translate-x-[1px]"></i>
+                        </div>
+                        <span class="group-hover:underline underline-offset-4 decoration-terraGreen-400">Watch Our Story</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Hero Right Content: Vertical Numbered Navigation & Editorial Subtext -->
+            <div class="lg:col-span-4 flex flex-col justify-between items-end h-full py-8 space-y-12">
+                <!-- Vertical Numbered Slide Navigation -->
+                <div class="flex flex-col items-end space-y-4 text-xs font-mono tracking-widest">
+                    <button onclick="switchHeroSlide(1)" id="slide-nav-1" class="slide-nav-btn active flex items-center gap-3 text-white transition-all duration-300 group">
+                        <span class="w-6 h-[1px] bg-white transition-all duration-300 group-hover:w-10"></span>
+                        <span class="text-sm font-semibold">01</span>
+                    </button>
+                    <button onclick="switchHeroSlide(2)" id="slide-nav-2" class="slide-nav-btn flex items-center gap-3 text-gray-500 hover:text-white transition-all duration-300 group">
+                        <span class="w-0 h-[1px] bg-white/50 transition-all duration-300 group-hover:w-6"></span>
+                        <span class="text-sm font-semibold">02</span>
+                    </button>
+                    <button onclick="switchHeroSlide(3)" id="slide-nav-3" class="slide-nav-btn flex items-center gap-3 text-gray-500 hover:text-white transition-all duration-300 group">
+                        <span class="w-0 h-[1px] bg-white/50 transition-all duration-300 group-hover:w-6"></span>
+                        <span class="text-sm font-semibold">03</span>
+                    </button>
+                    <button onclick="switchHeroSlide(4)" id="slide-nav-4" class="slide-nav-btn flex items-center gap-3 text-gray-500 hover:text-white transition-all duration-300 group">
+                        <span class="w-0 h-[1px] bg-white/50 transition-all duration-300 group-hover:w-6"></span>
+                        <span class="text-sm font-semibold">04</span>
+                    </button>
+                </div>
+
+                <!-- Lower Right Editorial Text Block -->
+                <div class="text-right text-xs tracking-[0.25em] text-gray-400 space-y-1 uppercase font-light">
+                    <div>PEOPLE —</div>
+                    <div>PLANET —</div>
+                    <div class="text-white font-medium">POSSIBILITY</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- MISSION / TRANSITION SECTION -->
+    <section id="mission" class="relative py-24 px-6 lg:px-16 bg-navy-950 border-t border-white/5 overflow-hidden">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            <div class="lg:col-span-6 space-y-6">
+                <div class="inline-flex items-center space-x-3 text-xs tracking-[0.3em] text-terraGreen-300 uppercase font-medium">
+                    <span class="w-6 h-[1px] bg-terraGreen-400"></span>
+                    <span>OUR MISSION</span>
+                </div>
+                <h2 class="font-editorial text-3xl sm:text-5xl tracking-wide uppercase leading-tight text-white">
+                    PIONEERING THE NEXT ERA OF SUSTAINABILITY
+                </h2>
+                <p class="text-gray-300 text-base leading-relaxed font-light">
+                    At Terra Nova, we merge cutting-edge environmental technology with natural ecosystem intelligence. Our global initiatives reverse ecological degradation, harness clean renewable energy, and build resilient communities for tomorrow.
+                </p>
+                <div class="grid grid-cols-2 gap-6 pt-4">
+                    <div class="border-l border-terraGreen-400/50 pl-4 space-y-1">
+                        <div class="text-3xl font-editorial text-white">100%</div>
+                        <div class="text-xs text-gray-400 uppercase tracking-wider">Renewable Focus</div>
+                    </div>
+                    <div class="border-l border-terraGreen-400/50 pl-4 space-y-1">
+                        <div class="text-3xl font-editorial text-white">45M+</div>
+                        <div class="text-xs text-gray-400 uppercase tracking-wider">Hectares Protected</div>
+                    </div>
+                </div>
+            </div>
+            <div class="lg:col-span-6 relative">
+                <div class="relative rounded-2xl overflow-hidden shadow-2xl border border-white/10 group">
+                    <img src="assets/hero_bg_2.webp" alt="Offshore Wind Turbines" loading="lazy" decoding="async" class="w-full h-[400px] object-cover transition-transform duration-700 group-hover:scale-105">
+                    <div class="absolute inset-0 bg-gradient-to-t from-navy-950/80 via-transparent to-transparent"></div>
+                    <div class="absolute bottom-6 left-6 right-6 flex justify-between items-end">
+                        <div>
+                            <span class="text-xs text-terraGreen-300 tracking-widest uppercase font-mono">Initiative 01</span>
+                            <h3 class="text-lg font-semibold text-white">Offshore Wind Energy Grids</h3>
+                        </div>
+                        <a href="#solutions" class="w-10 h-10 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center text-white hover:bg-terraGreen-500 transition-colors">→</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SOLUTIONS SECTION -->
+    <section id="solutions" class="relative py-28 px-6 lg:px-16 bg-sandLight text-navy-950 overflow-hidden">
+        <!-- Top left decorative border framing -->
+        <div class="max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start mb-12">
+                <!-- Left Title & Subtext Column -->
+                <div class="lg:col-span-4 space-y-6">
+                    <div class="inline-flex items-center space-x-3 text-xs tracking-[0.3em] text-gray-500 uppercase font-medium">
+                        <span>A BRIGHTER TOMORROW</span>
+                        <span class="w-8 h-[1px] bg-gray-400"></span>
+                    </div>
+
+                    <h2 class="font-sans font-extrabold text-3xl sm:text-4xl lg:text-5xl tracking-tight leading-[1.1] uppercase text-navy-950">
+                        SOLUTIONS<br>
+                        THAT MAKE<br>
+                        A DIFFERENCE.
+                    </h2>
+
+                    <p class="text-gray-600 text-sm sm:text-base leading-relaxed font-normal pr-4">
+                        From renewable energy to ecosystem restoration, we create real world solutions for a cleaner, healthier, more vibrant planet.
+                    </p>
+
+                    <div class="pt-2">
+                        <a href="#about" class="inline-flex items-center gap-2 text-xs font-bold tracking-widest uppercase text-navy-950 hover:text-terraGreen-600 transition-colors group">
+                            <span>LEARN MORE ABOUT OUR SOLUTIONS</span>
+                            <span class="transition-transform duration-300 group-hover:translate-x-1.5">→</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Middle 3 Visual Cards Column Grid -->
+                <div class="lg:col-span-8">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- Solution Card 1 -->
+                        <div class="solution-card bg-white rounded-lg p-3 shadow-md hover:shadow-2xl transition-all duration-500 group border border-gray-100 flex flex-col justify-between">
+                            <div>
+                                <div class="overflow-hidden rounded-md mb-4 aspect-[4/3]">
+                                    <img src="assets/solution_clean_energy.webp" alt="Clean Energy" loading="lazy" decoding="async" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                                </div>
+                                <div class="px-2 space-y-2">
+                                    <div class="flex items-center gap-2 text-terraGreen-600 text-sm">
+                                        <i class="fa-solid fa-sun text-xs"></i>
+                                        <h3 class="font-bold text-xs uppercase tracking-widest text-navy-950">CLEAN ENERGY</h3>
+                                    </div>
+                                    <p class="text-xs text-gray-600 leading-relaxed font-normal">
+                                        Powering a sustainable future with renewable solutions.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="px-2 pt-4 pb-2">
+                                <a href="#impact" class="inline-flex items-center gap-1.5 text-[11px] font-bold tracking-wider uppercase text-gray-900 group-hover:text-terraGreen-600 transition-colors">
+                                    <span>LEARN MORE</span>
+                                    <span class="transition-transform duration-300 group-hover:translate-x-1">→</span>
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Solution Card 2 -->
+                        <div class="solution-card bg-white rounded-lg p-3 shadow-md hover:shadow-2xl transition-all duration-500 group border border-gray-100 flex flex-col justify-between">
+                            <div>
+                                <div class="overflow-hidden rounded-md mb-4 aspect-[4/3]">
+                                    <img src="assets/solution_ecosystems.webp" alt="Thriving Ecosystems" loading="lazy" decoding="async" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                                </div>
+                                <div class="px-2 space-y-2">
+                                    <div class="flex items-center gap-2 text-terraGreen-600 text-sm">
+                                        <i class="fa-solid fa-leaf text-xs"></i>
+                                        <h3 class="font-bold text-xs uppercase tracking-widest text-navy-950">THRIVING ECOSYSTEMS</h3>
+                                    </div>
+                                    <p class="text-xs text-gray-600 leading-relaxed font-normal">
+                                        Restoring balance for generations ahead.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="px-2 pt-4 pb-2">
+                                <a href="#impact" class="inline-flex items-center gap-1.5 text-[11px] font-bold tracking-wider uppercase text-gray-900 group-hover:text-terraGreen-600 transition-colors">
+                                    <span>LEARN MORE</span>
+                                    <span class="transition-transform duration-300 group-hover:translate-x-1">→</span>
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Solution Card 3 -->
+                        <div class="solution-card bg-white rounded-lg p-3 shadow-md hover:shadow-2xl transition-all duration-500 group border border-gray-100 flex flex-col justify-between">
+                            <div>
+                                <div class="overflow-hidden rounded-md mb-4 aspect-[4/3]">
+                                    <img src="assets/solution_communities.webp" alt="Stronger Communities" loading="lazy" decoding="async" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                                </div>
+                                <div class="px-2 space-y-2">
+                                    <div class="flex items-center gap-2 text-terraGreen-600 text-sm">
+                                        <i class="fa-solid fa-users text-xs"></i>
+                                        <h3 class="font-bold text-xs uppercase tracking-widest text-navy-950">STRONGER COMMUNITIES</h3>
+                                    </div>
+                                    <p class="text-xs text-gray-600 leading-relaxed font-normal">
+                                        Building a cleaner, healthier world together.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="px-2 pt-4 pb-2">
+                                <a href="#impact" class="inline-flex items-center gap-1.5 text-[11px] font-bold tracking-wider uppercase text-gray-900 group-hover:text-terraGreen-600 transition-colors">
+                                    <span>LEARN MORE</span>
+                                    <span class="transition-transform duration-300 group-hover:translate-x-1">→</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Quote Row Block -->
+            <div class="pt-10 border-t border-gray-200 flex flex-col md:flex-row justify-between items-center gap-6">
+                <blockquote class="font-serifQuote italic text-xl sm:text-2xl text-gray-800 text-center md:text-left">
+                    "A healthier planet isn't a dream. It's a choice."
+                </blockquote>
+                <div class="text-right text-[11px] tracking-[0.25em] text-gray-500 uppercase font-semibold">
+                    <span>CLEANER TODAY</span>
+                    <span class="mx-2">•</span>
+                    <span>BRIGHTER TOMORROW</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- IMPACT & METRICS SECTION -->
+    <section id="impact" class="relative py-28 px-6 lg:px-16 bg-navy-900 text-white border-t border-white/5 overflow-hidden">
+        <div class="max-w-7xl mx-auto space-y-16">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 border-b border-white/10 pb-8">
+                <div>
+                    <div class="inline-flex items-center space-x-3 text-xs tracking-[0.3em] text-terraGreen-400 uppercase font-medium">
+                        <span class="w-6 h-[1px] bg-terraGreen-400"></span>
+                        <span>GLOBAL IMPACT</span>
+                    </div>
+                    <h2 class="font-editorial text-3xl sm:text-5xl tracking-wide uppercase text-white mt-2">
+                        MEASURABLE ENVIRONMENTAL CHANGE
+                    </h2>
+                </div>
+                <p class="text-gray-400 text-sm max-w-md font-light">
+                    Every initiative we lead is backed by verified data, transparent reporting, and real-world environmental recovery metrics.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div class="p-6 rounded-xl bg-white/5 border border-white/10 hover:border-terraGreen-400/50 transition-all duration-300">
+                    <div class="text-4xl lg:text-5xl font-editorial text-white mb-2">2.8 GW</div>
+                    <div class="text-xs uppercase tracking-widest text-terraGreen-300 font-semibold mb-1">Clean Power Generated</div>
+                    <p class="text-xs text-gray-400 font-light">Annually supplying zero-carbon electricity to over 1.2 million households.</p>
+                </div>
+                <div class="p-6 rounded-xl bg-white/5 border border-white/10 hover:border-terraGreen-400/50 transition-all duration-300">
+                    <div class="text-4xl lg:text-5xl font-editorial text-white mb-2">18.4M</div>
+                    <div class="text-xs uppercase tracking-widest text-terraGreen-300 font-semibold mb-1">Trees Planted</div>
+                    <p class="text-xs text-gray-400 font-light">Native biodiverse afforestation projects across 14 vulnerable ecosystems.</p>
+                </div>
+                <div class="p-6 rounded-xl bg-white/5 border border-white/10 hover:border-terraGreen-400/50 transition-all duration-300">
+                    <div class="text-4xl lg:text-5xl font-editorial text-white mb-2">94%</div>
+                    <div class="text-xs uppercase tracking-widest text-terraGreen-300 font-semibold mb-1">Waste Diverted</div>
+                    <p class="text-xs text-gray-400 font-light">Closed-loop circular resource management across partner municipalities.</p>
+                </div>
+                <div class="p-6 rounded-xl bg-white/5 border border-white/10 hover:border-terraGreen-400/50 transition-all duration-300">
+                    <div class="text-4xl lg:text-5xl font-editorial text-white mb-2">500K+</div>
+                    <div class="text-xs uppercase tracking-widest text-terraGreen-300 font-semibold mb-1">Lives Empowered</div>
+                    <p class="text-xs text-gray-400 font-light">Providing clean water, sustainable housing, and green jobs globally.</p>
+                </div>
+            </div>
+            <a href="/stories.html" class="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-terraGreen-300 hover:text-white transition-colors">
+                Explore client and community stories <span aria-hidden="true">→</span>
+            </a>
+        </div>
+    </section>
+
+    <!-- INTERACTIVE SUSTAINABILITY SIMULATOR SECTION -->
+    <section id="simulator" class="relative py-28 px-6 lg:px-16 bg-navy-950 text-white border-t border-white/5 overflow-hidden">
+        <div class="max-w-7xl mx-auto space-y-12">
+            <div class="text-center space-y-4 max-w-2xl mx-auto">
+                <div class="inline-flex items-center space-x-3 text-xs tracking-[0.3em] text-terraGreen-400 uppercase font-medium">
+                    <span class="w-6 h-[1px] bg-terraGreen-400"></span>
+                    <span>LIVE INTERACTIVE TOOL</span>
+                    <span class="w-6 h-[1px] bg-terraGreen-400"></span>
+                </div>
+                <h2 class="font-editorial text-3xl sm:text-5xl tracking-wide uppercase text-white">
+                    PLANETARY IMPACT SIMULATOR
+                </h2>
+                <p class="text-gray-400 text-sm font-light">
+                    Adjust the sustainability parameters below to model real-time carbon reduction, clean energy output, and ecological recovery rates.
+                </p>
+            </div>
+
+            <!-- Simulator Control Panel Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center bg-navy-900/80 p-8 sm:p-12 rounded-2xl border border-white/10 shadow-2xl backdrop-blur-md">
+                <!-- Sliders Column -->
+                <div class="lg:col-span-6 space-y-8">
+                    <!-- Slider 1: Energy Target -->
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center text-xs uppercase tracking-wider font-semibold">
+                            <span class="text-gray-300">Clean Energy Capacity Target</span>
+                            <span id="sim-energy-val" class="text-terraGreen-300 font-mono font-bold text-sm">5.0 GW</span>
+                        </div>
+                        <input type="range" id="sim-energy" min="1" max="20" step="0.5" value="5" oninput="updateSimulator()" class="w-full">
+                    </div>
+
+                    <!-- Slider 2: Land Restoration -->
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center text-xs uppercase tracking-wider font-semibold">
+                            <span class="text-gray-300">Reforestation & Ecosystem Land</span>
+                            <span id="sim-land-val" class="text-terraGreen-300 font-mono font-bold text-sm">25.0M Hectares</span>
+                        </div>
+                        <input type="range" id="sim-land" min="5" max="100" step="5" value="25" oninput="updateSimulator()" class="w-full">
+                    </div>
+
+                    <!-- Slider 3: Carbon Offset Budget -->
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center text-xs uppercase tracking-wider font-semibold">
+                            <span class="text-gray-300">Annual Carbon Offset Direct Capture</span>
+                            <span id="sim-carbon-val" class="text-terraGreen-300 font-mono font-bold text-sm">10.0M Tons</span>
+                        </div>
+                        <input type="range" id="sim-carbon" min="2" max="50" step="2" value="10" oninput="updateSimulator()" class="w-full">
+                    </div>
+                </div>
+
+                <!-- Live Results Display Column -->
+                <div class="lg:col-span-6 grid grid-cols-2 gap-6 pl-0 lg:pl-6 border-t lg:border-t-0 lg:border-l border-white/10 pt-8 lg:pt-0">
+                    <div class="bg-white/5 p-6 rounded-xl border border-white/10 space-y-2">
+                        <div class="text-xs uppercase tracking-widest text-gray-400 font-mono">CO₂ Abated / Yr</div>
+                        <div id="res-co2" class="text-3xl font-editorial text-terraGreen-300 font-bold">14.5M</div>
+                        <div class="text-[11px] text-gray-400">Equivalent to removing 3.2M cars off the road.</div>
+                    </div>
+                    <div class="bg-white/5 p-6 rounded-xl border border-white/10 space-y-2">
+                        <div class="text-xs uppercase tracking-widest text-gray-400 font-mono">Homes Powered</div>
+                        <div id="res-homes" class="text-3xl font-editorial text-white font-bold">2.15M</div>
+                        <div class="text-[11px] text-gray-400">100% clean, zero-carbon electric power.</div>
+                    </div>
+                    <div class="bg-white/5 p-6 rounded-xl border border-white/10 space-y-2">
+                        <div class="text-xs uppercase tracking-widest text-gray-400 font-mono">Trees Equivalent</div>
+                        <div id="res-trees" class="text-3xl font-editorial text-white font-bold">420M</div>
+                        <div class="text-[11px] text-gray-400">Native biodiverse forest ecosystem value.</div>
+                    </div>
+                    <div class="bg-white/5 p-6 rounded-xl border border-white/10 space-y-2">
+                        <div class="text-xs uppercase tracking-widest text-gray-400 font-mono">Clean Air Gain</div>
+                        <div id="res-air" class="text-3xl font-editorial text-terraGreen-300 font-bold">+88%</div>
+                        <div class="text-[11px] text-gray-400">Regional atmospheric purity index boost.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- GLOBAL INTERACTIVE MAP SECTION -->
+    <section id="projects-map" class="relative py-28 px-6 lg:px-16 bg-navy-900 text-white border-t border-white/5">
+        <div class="max-w-7xl mx-auto space-y-12">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+                <div>
+                    <div class="inline-flex items-center space-x-3 text-xs tracking-[0.3em] text-terraGreen-400 uppercase font-medium">
+                        <span class="w-6 h-[1px] bg-terraGreen-400"></span>
+                        <span>GLOBAL DEPLOYMENT</span>
+                    </div>
+                    <h2 class="font-editorial text-3xl sm:text-5xl tracking-wide uppercase text-white mt-2">
+                        ACTIVE INITIATIVES WORLDWIDE
+                    </h2>
+                </div>
+                <div class="flex items-center gap-4 text-xs font-mono">
+                    <span class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-terraGreen-400"></span> Active Hub</span>
+                    <span class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span> Expanding Grid</span>
+                </div>
+            </div>
+
+            <!-- Stylized Global Map & 3D WebGL Globe Main Container -->
+            <div class="relative w-full rounded-2xl bg-navy-950 border border-white/10 overflow-hidden shadow-2xl p-6 sm:p-8 space-y-6">
+                <!-- Top Bar: Location Switcher Buttons & Controls -->
+                <div class="flex flex-wrap items-center justify-between gap-4">
+                    <div class="flex flex-wrap gap-2 text-xs font-mono">
+                        <button data-project="nordic" aria-pressed="true" onclick="selectMapPin('nordic')" class="project-select-btn px-4 py-2 rounded-lg bg-navy-900/90 border border-terraGreen-400 text-white font-bold flex items-center gap-2 hover:bg-terraGreen-500/30 transition-all cursor-pointer">
+                            <span class="w-2 h-2 rounded-full bg-terraGreen-400 animate-pulse"></span> 📍 North Sea (Wind)
+                        </button>
+                        <button data-project="amazon" aria-pressed="false" onclick="selectMapPin('amazon')" class="project-select-btn px-4 py-2 rounded-lg bg-navy-900/90 border border-white/20 text-gray-300 font-bold flex items-center gap-2 hover:bg-terraGreen-500/30 hover:text-white transition-all cursor-pointer">
+                            <span class="w-2 h-2 rounded-full bg-terraGreen-400"></span> 📍 Amazon (Forest)
+                        </button>
+                        <button data-project="alpine" aria-pressed="false" onclick="selectMapPin('alpine')" class="project-select-btn px-4 py-2 rounded-lg bg-navy-900/90 border border-white/20 text-gray-300 font-bold flex items-center gap-2 hover:bg-amber-400/30 hover:text-white transition-all cursor-pointer">
+                            <span class="w-2 h-2 rounded-full bg-amber-400"></span> 📍 Alps (Hydro)
+                        </button>
+                        <button data-project="mojave" aria-pressed="false" onclick="selectMapPin('mojave')" class="project-select-btn px-4 py-2 rounded-lg bg-navy-900/90 border border-white/20 text-gray-300 font-bold flex items-center gap-2 hover:bg-terraGreen-500/30 hover:text-white transition-all cursor-pointer">
+                            <span class="w-2 h-2 rounded-full bg-terraGreen-400"></span> 📍 Mojave (Solar)
+                        </button>
+                    </div>
+
+                    <div class="hidden sm:flex items-center gap-2 text-[11px] font-mono text-gray-400 bg-white/5 px-3.5 py-1.5 rounded-full border border-white/10">
+                        <span class="w-2 h-2 rounded-full bg-terraGreen-400"></span>
+                        <span>Drag / Rotate 3D WebGL Earth Globe</span>
+                    </div>
+                </div>
+
+                <!-- 3D WebGL Globe Dedicated Canvas Viewport (100% UNOBSTRUCTED) -->
+                <div class="relative w-full h-[480px] sm:h-[540px] rounded-xl overflow-hidden bg-gradient-to-b from-navy-950 via-[#060c18] to-navy-950 flex items-center justify-center border border-white/5">
+                    <div id="globe-3d-canvas-container" class="w-full h-full relative z-10 cursor-grab active:cursor-grabbing"></div>
+                    <!-- Subtle Ambient Starlight Gradients -->
+                    <div class="absolute inset-0 bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:24px_24px] opacity-25 pointer-events-none"></div>
+                    <div class="absolute inset-0 bg-gradient-to-t from-navy-950 via-transparent to-navy-950/40 pointer-events-none z-20"></div>
+                </div>
+
+                <!-- Map Info Overlay Banner (Positioned BELOW the globe with zero overlap) -->
+                <div id="map-info-card" class="bg-navy-900/95 border border-white/20 backdrop-blur-md p-5 rounded-xl flex flex-col lg:flex-row justify-between items-center gap-6 shadow-xl">
+                    <div class="grid grid-cols-1 sm:grid-cols-[180px_1fr] gap-4 w-full min-w-0 items-center">
+                        <img id="map-info-image" src="assets/solution_clean_energy.webp" alt="Offshore wind turbines at the North Sea initiative" loading="lazy" decoding="async" class="w-full h-28 sm:h-28 object-cover rounded-lg border border-white/15 shadow-md">
+                        <div class="flex items-start gap-3 min-w-0">
+                            <div id="map-info-icon" class="w-10 h-10 rounded-full bg-terraGreen-500/20 border border-terraGreen-400 flex items-center justify-center text-terraGreen-300 text-lg font-bold shrink-0">🌬️</div>
+                            <div class="min-w-0 space-y-1">
+                                <div class="text-sm font-bold text-white uppercase tracking-wider" id="map-info-title">NORDIC OFFSHORE WIND MATRIX</div>
+                                <div class="text-xs text-gray-300 font-light leading-relaxed" id="map-info-desc">Generating 1.4 Gigawatts of clean renewable wind energy in the North Sea.</div>
+                                <div id="map-info-metric" class="text-[11px] text-terraGreen-300 font-mono font-medium">NORTH SEA · 1.4 GW OFFSHORE WIND</div>
+                            </div>
+                        </div>
+                    </div>
+                    <button onclick="openMovementModal()" class="w-full sm:w-auto px-6 py-3 rounded-full bg-terraGreen-500 hover:bg-terraGreen-400 text-xs font-bold uppercase tracking-wider text-white transition-all shadow-lg shadow-terraGreen-500/20 shrink-0 cursor-pointer text-center whitespace-nowrap">
+                        PARTNER ON PROJECTS →
+                    </button>
+                </div>
+            </div>
+    </section>
+
+    <!-- REAL-TIME GLOBAL CITY AIR QUALITY & CLIMATE SEARCH -->
+    <section id="city-search-widget" class="relative py-24 px-6 lg:px-16 bg-navy-950 text-white border-t border-white/5">
+        <div class="max-w-7xl mx-auto space-y-12">
+            <div class="text-center space-y-4 max-w-2xl mx-auto">
+                <div class="inline-flex items-center space-x-3 text-xs tracking-[0.3em] text-terraGreen-400 uppercase font-medium">
+                    <span class="w-6 h-[1px] bg-terraGreen-400"></span>
+                    <span>LIVE GLOBAL SATELLITE SEARCH</span>
+                    <span class="w-6 h-[1px] bg-terraGreen-400"></span>
+                </div>
+                <h2 class="font-editorial text-3xl sm:text-5xl tracking-wide uppercase text-white">
+                    REAL-TIME CITY AIR QUALITY SEARCH
+                </h2>
+                <p class="text-gray-400 text-sm font-light">
+                    Type any city in the world to fetch live satellite air quality (AQI), PM2.5 particulate density, and carbon monoxide levels via Open-Meteo live API.
+                </p>
+
+                <!-- City Search Bar Input -->
+                <form onsubmit="searchCityAirQuality(event)" class="relative max-w-md mx-auto pt-2">
+                    <input type="text" id="city-search-input" aria-label="Search air quality by city" placeholder="Search city (e.g. London, Delhi, New York, Tokyo)..." required class="w-full py-3.5 pl-5 pr-28 rounded-full bg-navy-900 border border-white/30 text-xs text-white placeholder-gray-400 focus:outline-none focus:border-terraGreen-400 shadow-xl">
+                    <button type="submit" class="absolute right-1.5 top-1/2 -translate-y-1/2 px-5 py-2 rounded-full bg-terraGreen-500 hover:bg-terraGreen-400 text-xs text-white font-bold uppercase tracking-wider transition-all cursor-pointer">
+                        SEARCH 🔍
+                    </button>
+                </form>
+            </div>
+
+            <!-- Live City Telemetry Results Cards -->
+            <div id="city-results-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 pt-4">
+                <div class="p-6 rounded-xl bg-navy-900 border border-white/10 space-y-2">
+                    <div class="text-xs uppercase tracking-widest text-gray-400 font-mono">SELECTED CITY</div>
+                    <div id="city-res-name" class="text-2xl font-editorial text-white font-bold">Berlin, DE</div>
+                    <div class="text-[11px] text-gray-400 font-mono" id="city-res-coords">Lat: 52.52° | Lon: 13.41°</div>
+                </div>
+
+                <div class="p-6 rounded-xl bg-navy-900 border border-terraGreen-400/40 space-y-2">
+                    <div class="text-xs uppercase tracking-widest text-terraGreen-400 font-mono">EUROPEAN AQI INDEX</div>
+                    <div id="city-res-aqi" class="text-3xl font-editorial text-terraGreen-300 font-bold">24 (GOOD)</div>
+                    <div class="text-[11px] text-gray-400">Clean atmospheric air quality rating.</div>
+                </div>
+
+                <div class="p-6 rounded-xl bg-navy-900 border border-white/10 space-y-2">
+                    <div class="text-xs uppercase tracking-widest text-gray-400 font-mono">PM2.5 DENSITY</div>
+                    <div id="city-res-pm25" class="text-3xl font-editorial text-white font-bold">12.4 µg/m³</div>
+                    <div class="text-[11px] text-gray-400">Fine inhalable particulate matter.</div>
+                </div>
+
+                <div class="p-6 rounded-xl bg-navy-900 border border-white/10 space-y-2">
+                    <div class="text-xs uppercase tracking-widest text-gray-400 font-mono">CARBON MONOXIDE</div>
+                    <div id="city-res-co" class="text-3xl font-editorial text-terraGreen-300 font-bold">180 µg/m³</div>
+                    <div class="text-[11px] text-gray-400">Atmospheric CO concentration reading.</div>
+                </div>
+            </div>
+            <!-- Live Interactive Vector Leaflet Map Layer -->
+            <div class="mt-8 rounded-2xl bg-navy-900 border border-white/10 overflow-hidden shadow-2xl p-2">
+                <div class="px-4 py-3 flex flex-col lg:flex-row lg:justify-between lg:items-center gap-3 text-xs font-mono text-gray-400 border-b border-white/5">
+                    <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-terraGreen-400 animate-pulse"></span> LIVE CLIMATE OBSERVATIONS · OPEN-METEO</span>
+                    <div class="flex flex-wrap items-center gap-2" role="group" aria-label="Map overlays">
+                        <button type="button" data-climate-layer="air" onclick="setClimateLayer('air')" aria-pressed="true" class="climate-layer-btn px-3 py-1.5 rounded border border-terraGreen-400 text-white">Air quality</button>
+                        <button type="button" data-climate-layer="wind" onclick="setClimateLayer('wind')" aria-pressed="false" class="climate-layer-btn px-3 py-1.5 rounded border border-white/20 text-gray-400">Wind</button>
+                        <button type="button" data-climate-layer="projects" onclick="setClimateLayer('projects')" aria-pressed="false" class="climate-layer-btn px-3 py-1.5 rounded border border-white/20 text-gray-400">Projects</button>
+                        <span id="climate-map-updated" class="text-[10px] text-gray-500">Loading observations...</span>
+                    </div>
+                </div>
+
+                <div id="aqi-legend" class="aqi-legend" aria-label="AQI legend">
+                    <span><i style="background:#66d68d"></i> Good</span>
+                    <span><i style="background:#f3c85b"></i> Moderate</span>
+                    <span><i style="background:#f07861"></i> Poor</span>
+                </div>
+
+                <div id="community-project-dashboard" class="community-project-dashboard" hidden>
+                    <div class="project-map-kpis" aria-label="Community project summary">
+                        <div><strong id="project-count">4</strong><span>Active hubs</span></div>
+                        <div><strong id="project-energy-count">3</strong><span>Clean energy</span></div>
+                        <div><strong>12M ha</strong><span>Amazon protected</span></div>
+                        <div><strong>Volunteer</strong><span>Pathway available</span></div>
+                    </div>
+                    <div class="project-map-filters" role="group" aria-label="Filter community projects">
+                        <button type="button" class="project-filter-btn is-active" data-project-filter="all" aria-pressed="true">All projects</button>
+                        <button type="button" class="project-filter-btn" data-project-filter="restoration" aria-pressed="false">Restoration</button>
+                        <button type="button" class="project-filter-btn" data-project-filter="tree-planting" aria-pressed="false">Tree planting</button>
+                        <button type="button" class="project-filter-btn" data-project-filter="energy" aria-pressed="false">Clean energy</button>
+                        <button type="button" class="project-filter-btn" data-project-filter="volunteer" aria-pressed="false">Volunteer</button>
+                    </div>
+                </div>
+
+                <div class="community-map-layout">
+                    <div id="leaflet-city-map" class="w-full h-[380px] rounded-xl z-10"></div>
+                    <aside id="project-impact-panel" class="project-impact-panel" hidden aria-live="polite">
+                        <div class="project-impact-heading">
+                            <span>COMMUNITY NETWORK</span>
+                            <h3>Impact by location</h3>
+                        </div>
+                        <div id="project-impact-list" class="project-impact-list"></div>
+                    </aside>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- REAL-TIME GLOBAL COMMUNITY LEADERBOARD & SSE LIVE STREAM -->
+    <section id="community-leaderboard" class="relative py-28 px-6 lg:px-16 bg-navy-900 text-white border-t border-white/5">
+        <div class="max-w-7xl mx-auto space-y-12">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+                <div>
+                    <div class="inline-flex items-center space-x-3 text-xs tracking-[0.3em] text-terraGreen-400 uppercase font-medium">
+                        <span class="w-6 h-[1px] bg-terraGreen-400"></span>
+                        <span>LIVE COMMUNITY IMPACT</span>
+                    </div>
+                    <h2 class="font-editorial text-3xl sm:text-5xl tracking-wide uppercase text-white mt-2">
+                        GLOBAL SUPPORTERS & LIVE STREAM
+                    </h2>
+                </div>
+                <div class="flex items-center gap-3 bg-navy-950 px-4 py-2 rounded-full border border-white/10 text-xs font-mono">
+                    <span class="w-2.5 h-2.5 rounded-full bg-terraGreen-400 animate-pulse"></span>
+                    <span id="sse-status-badge" class="text-terraGreen-300 font-bold">CONNECTING...</span>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <!-- Leaderboard Top Supporters Table (lg:col-span-7) -->
+                <div class="lg:col-span-7 bg-navy-950 p-6 rounded-2xl border border-white/10 shadow-2xl space-y-6">
+                    <div class="flex justify-between items-center border-b border-white/10 pb-4">
+                        <h3 class="text-sm font-bold tracking-widest uppercase text-white flex items-center gap-2">
+                            <span>🏆 TOP PLANET GUARDIANS</span>
+                        </h3>
+                        <span class="text-xs text-gray-400 font-mono">VERIFIED OFFSETS</span>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs font-sans">
+                            <thead class="text-[11px] uppercase tracking-wider text-gray-400 border-b border-white/10">
+                                <tr>
+                                    <th class="pb-3">RANK</th>
+                                    <th class="pb-3">SUPPORTER</th>
+                                    <th class="pb-3">TREES</th>
+                                    <th class="pb-3">CO₂ OFFSET</th>
+                                    <th class="pb-3">BADGE</th>
+                                </tr>
+                            </thead>
+                            <tbody id="leaderboard-table-body" class="divide-y divide-white/5 text-gray-300 font-mono">
+                                <!-- Dynamically populated by script.js -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Live Streaming Pledge Feed (lg:col-span-5) -->
+                <div class="lg:col-span-5 bg-navy-950 p-6 rounded-2xl border border-terraGreen-400/30 shadow-2xl space-y-4 flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-center border-b border-white/10 pb-3">
+                            <h3 class="text-sm font-bold tracking-widest uppercase text-terraGreen-300 flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-terraGreen-400 animate-ping"></span>
+                                <span>LIVE PLEDGE FEED</span>
+                            </h3>
+                            <span class="text-[10px] text-gray-400 font-mono">REAL-TIME SSE</span>
+                        </div>
+                        <p class="text-[11px] text-gray-400 pt-2">Live stream of environmental actions taken by supporters around the globe:</p>
+                    </div>
+
+                    <!-- Scrollable Live Feed Container -->
+                    <div id="live-pledges-stream" class="space-y-3 max-h-[300px] overflow-y-auto pr-2">
+                        <!-- Streamed items inserted here -->
+                    </div>
+
+                    <!-- Quick User Pledge Action Box -->
+                    <div class="pt-3 border-t border-white/10">
+                        <button onclick="openMovementModal()" class="w-full py-2.5 rounded-full bg-terraGreen-500 hover:bg-terraGreen-400 text-xs text-white font-bold uppercase tracking-wider transition-all text-center cursor-pointer">
+                            + MAKE YOUR GLOBAL PLEDGE NOW
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- LIVE GLOBAL ECO COUNTER & MILESTONES TICKER -->
+    <div id="live-ticker-bar" class="bg-navy-950/90 border-y border-white/10 py-3 px-6 text-xs font-mono text-gray-300 flex items-center justify-between overflow-hidden">
+        <div class="flex items-center space-x-3">
+            <span class="w-2 h-2 rounded-full bg-terraGreen-400 animate-ping"></span>
+            <span class="text-terraGreen-300 font-bold uppercase tracking-wider">LIVE TELEMETRY:</span>
+            <span id="ticker-text" class="text-white">Nordic Wind Grid generated +450 kWh clean power in last 5 seconds.</span>
+        </div>
+        <div class="hidden md:flex items-center space-x-6 text-[11px] text-gray-400">
+            <span>GRID LOAD: 98.4%</span>
+            <span>CANOPY DENSITY: +14.2%</span>
+            <button onclick="openVrModal()" class="text-terraGreen-300 hover:underline">LAUNCH 360° VR TOUR →</button>
+        </div>
+    </div>
+
+    <!-- 1. INTERACTIVE WIND & SOLAR FARM CONFIGURATOR -->
+    <section id="farm-configurator" class="relative py-28 px-6 lg:px-16 bg-navy-900 text-white border-t border-white/5">
+        <div class="max-w-7xl mx-auto space-y-12">
+            <div class="text-center space-y-4 max-w-2xl mx-auto">
+                <div class="inline-flex items-center space-x-3 text-xs tracking-[0.3em] text-terraGreen-400 uppercase font-medium">
+                    <span class="w-6 h-[1px] bg-terraGreen-400"></span>
+                    <span>3D SIMULATION CONFIGURATOR</span>
+                    <span class="w-6 h-[1px] bg-terraGreen-400"></span>
+                </div>
+                <h2 class="font-editorial text-3xl sm:text-5xl tracking-wide uppercase text-white">
+                    RENEWABLE FARM DESIGNER
+                </h2>
+                <p class="text-gray-400 text-sm font-light">
+                    Configure wind turbine arrays, solar panel tilts, and environmental weather profiles to optimize real-time clean power output.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center bg-navy-950 p-8 rounded-2xl border border-white/10 shadow-2xl">
+                <!-- Configurator Controls (lg:col-span-4) -->
+                <div class="lg:col-span-4 space-y-6">
+                    <div>
+                        <label class="block text-xs uppercase tracking-wider font-semibold text-gray-300 mb-2">
+                            Wind Turbine Count: <span id="cfg-turbines-val" class="text-terraGreen-300 font-mono font-bold">24 Units</span>
+                        </label>
+                        <input type="range" id="cfg-turbines" min="6" max="60" value="24" oninput="renderFarmConfig()" class="w-full">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs uppercase tracking-wider font-semibold text-gray-300 mb-2">
+                            Solar Panel Angle: <span id="cfg-angle-val" class="text-terraGreen-300 font-mono font-bold">35° Optimal</span>
+                        </label>
+                        <input type="range" id="cfg-angle" min="15" max="75" value="35" oninput="renderFarmConfig()" class="w-full">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs uppercase tracking-wider font-semibold text-gray-300 mb-2">Weather Condition Mode</label>
+                        <select id="cfg-weather" onchange="renderFarmConfig()" class="w-full px-4 py-2.5 rounded-lg bg-navy-900 border border-white/20 text-xs text-white focus:outline-none focus:border-terraGreen-400">
+                            <option value="sunset">Golden Hour Sunset</option>
+                            <option value="noon">High Noon Sunlight</option>
+                            <option value="rain">Misty Rain & Wind</option>
+                            <option value="night">Starry Twilight</option>
+                        </select>
+                    </div>
+
+                    <div class="pt-4 border-t border-white/10 space-y-3">
+                        <div class="flex justify-between text-xs font-mono">
+                            <span class="text-gray-400">ESTIMATED OUTPUT:</span>
+                            <span id="cfg-power" class="text-white font-bold">1,480 MW/h</span>
+                        </div>
+                        <div class="flex justify-between text-xs font-mono">
+                            <span class="text-gray-400">EFFICIENCY SCORE:</span>
+                            <span id="cfg-eff" class="text-terraGreen-300 font-bold">96.8%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Live Visual Farm Render Canvas (lg:col-span-8) -->
+                <div class="lg:col-span-8 relative h-[380px] rounded-xl overflow-hidden border border-white/10 bg-black flex items-center justify-center">
+                    <img id="farm-render-img" src="assets/hero_bg_2.webp" alt="Farm Render" loading="lazy" decoding="async" class="w-full h-full object-cover transition-all duration-700">
+                    <div class="absolute inset-0 bg-gradient-to-t from-navy-950 via-transparent to-transparent"></div>
+                    <div class="absolute top-4 right-4 bg-navy-900/80 backdrop-blur-md border border-white/20 px-3 py-1.5 rounded-md text-[11px] font-mono text-terraGreen-300 flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-terraGreen-400 animate-ping"></span>
+                        <span id="farm-render-badge">SIMULATION LIVE</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 2. BEFORE / AFTER ECOLOGICAL RESTORATION SLIDER -->
+    <section class="relative py-28 px-6 lg:px-16 bg-navy-950 text-white border-t border-white/5">
+        <div class="max-w-7xl mx-auto space-y-12">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+                <div>
+                    <div class="inline-flex items-center space-x-3 text-xs tracking-[0.3em] text-terraGreen-400 uppercase font-medium">
+                        <span class="w-6 h-[1px] bg-terraGreen-400"></span>
+                        <span>ECOSYSTEM RECOVERY</span>
+                    </div>
+                    <h2 class="font-editorial text-3xl sm:text-5xl tracking-wide uppercase text-white mt-2">
+                        BEFORE & AFTER RESTORATION
+                    </h2>
+                </div>
+                <p class="text-gray-400 text-sm max-w-md font-light">
+                    Drag the interactive slider handle to visualize 36 months of Terra Nova biodiverse reforestation and river basin recovery.
+                </p>
+            </div>
+
+            <!-- Draggable Comparison Container -->
+            <div class="relative w-full h-[460px] rounded-2xl overflow-hidden border border-white/10 shadow-2xl ba-container" id="ba-slider">
+                <!-- After Image (Full background) -->
+                <img src="assets/solution_ecosystems.webp" alt="After Restoration" loading="lazy" decoding="async" class="absolute inset-0 w-full h-full object-cover">
+                <div class="absolute top-6 right-6 bg-terraGreen-500/90 text-white px-3 py-1 rounded text-xs font-mono tracking-widest uppercase z-10">
+                    AFTER: TERRA NOVA RESTORATION (MONTH 36)
+                </div>
+
+                <!-- Before Image (Clipped view) -->
+                <div class="ba-resize" id="ba-resize">
+                    <img src="assets/solution_clean_energy.webp" alt="Before Restoration" loading="lazy" decoding="async" class="absolute top-0 left-0 w-full h-full object-cover max-w-none" id="ba-before-img">
+                    <div class="absolute top-6 left-6 bg-black/80 text-gray-300 px-3 py-1 rounded text-xs font-mono tracking-widest uppercase z-10">
+                        BEFORE: DEGRADED LANDSCAPE (MONTH 0)
+                    </div>
+                </div>
+
+                <!-- Draggable Divider Bar -->
+                <div class="ba-handle" id="ba-handle">
+                    <div class="ba-circle">↔</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. SATELLITE EARTH RADAR FEED SIMULATOR -->
+    <section class="relative py-24 px-6 lg:px-16 bg-navy-900 text-white border-t border-white/5 overflow-hidden">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            <!-- Radar Visual Display (lg:col-span-6) -->
+            <div class="lg:col-span-6 relative flex justify-center">
+                <div class="relative w-72 h-72 sm:w-96 sm:h-96 rounded-full border-2 border-terraGreen-400/40 bg-navy-950 shadow-2xl flex items-center justify-center overflow-hidden">
+                    <!-- Concentric Grid Circles -->
+                    <div class="absolute w-3/4 h-3/4 rounded-full border border-terraGreen-400/20"></div>
+                    <div class="absolute w-1/2 h-1/2 rounded-full border border-terraGreen-400/20"></div>
+                    <div class="absolute w-1/4 h-1/4 rounded-full border border-terraGreen-400/20"></div>
+                    <div class="absolute inset-0 bg-[linear-gradient(to_right,rgba(99,132,83,0.1)_1px,transparent_1px),linear-gradient(to_bottom,rgba(99,132,83,0.1)_1px,transparent_1px)] bg-[size:20px_20px]"></div>
+
+                    <!-- Radar Sweeper Conical Gradient Line -->
+                    <div class="absolute inset-0 bg-[conic-gradient(from_0deg,rgba(99,132,83,0.4)_0deg,transparent_60deg)] radar-sweeper rounded-full"></div>
+
+                    <!-- Radar Target Node Pins -->
+                    <div class="w-3 h-3 rounded-full bg-terraGreen-400 animate-ping z-10"></div>
+                </div>
+            </div>
+
+            <!-- Radar Telemetry Stats (lg:col-span-6) -->
+            <div class="lg:col-span-6 space-y-6">
+                <div class="inline-flex items-center space-x-3 text-xs tracking-[0.3em] text-terraGreen-400 uppercase font-medium">
+                    <span class="w-6 h-[1px] bg-terraGreen-400"></span>
+                    <span>SATELLITE TELEMETRY</span>
+                </div>
+                <h2 class="font-editorial text-3xl sm:text-5xl tracking-wide uppercase text-white leading-tight">
+                    REAL-TIME EARTH RADAR TELEMETRY
+                </h2>
+                <p class="text-gray-300 text-sm leading-relaxed font-light">
+                    Direct orbital telemetry monitoring canopy cover recovery, solar thermal dissipation, and atmospheric CO₂ capture efficiency across all Terra Nova project coordinates.
+                </p>
+
+                <div class="grid grid-cols-2 gap-4 pt-2 font-mono text-xs">
+                    <div class="p-4 rounded-lg bg-navy-950 border border-white/10">
+                        <div class="text-gray-400 uppercase">ORBITAL SATELLITE</div>
+                        <div class="text-white font-bold text-sm mt-1">TERRA-SAT 4</div>
+                    </div>
+                    <div class="p-4 rounded-lg bg-navy-950 border border-white/10">
+                        <div class="text-gray-400 uppercase">OCEAN TEMP SHIFT</div>
+                        <div class="text-terraGreen-300 font-bold text-sm mt-1">-0.12°C Stabilized</div>
+                    </div>
+                    <div class="p-4 rounded-lg bg-navy-950 border border-white/10">
+                        <div class="text-gray-400 uppercase">ATMOSPHERIC PURITY</div>
+                        <div class="text-white font-bold text-sm mt-1">94.8 AQI Index</div>
+                    </div>
+                    <div class="p-4 rounded-lg bg-navy-950 border border-white/10">
+                        <div class="text-gray-400 uppercase">CANOPY COVER</div>
+                        <div class="text-terraGreen-300 font-bold text-sm mt-1">88.4% Density</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. FOOTPRINT CALCULATOR WIZARD -->
+    <section id="footprint-wizard" class="relative py-28 px-6 lg:px-16 bg-navy-950 text-white border-t border-white/5">
+        <div class="max-w-4xl mx-auto bg-navy-900 p-8 sm:p-12 rounded-2xl border border-white/10 shadow-2xl space-y-8">
+            <div class="text-center space-y-2">
+                <div class="text-xs font-bold uppercase tracking-widest text-terraGreen-400">ENTERPRISE & INDIVIDUAL TOOL</div>
+                <h2 class="font-editorial text-3xl uppercase text-white">CARBON FOOTPRINT CALCULATOR</h2>
+                <p class="text-xs text-gray-400 font-light">Estimate your annual footprint and claim a verified Terra Nova Offset Certificate.</p>
+            </div>
+
+            <div class="personal-carbon-dashboard" id="personal-carbon-dashboard">
+                <div class="carbon-dashboard-inputs">
+                    <div class="carbon-dashboard-heading">
+                        <span>YOUR PROFILE</span>
+                        <h3>Monthly activity</h3>
+                    </div>
+                    <label class="carbon-field">
+                        <span>Profile name</span>
+                        <input type="text" id="carbon-profile-name" maxlength="40" placeholder="Your name" autocomplete="name" oninput="calculateFootprint()">
+                    </label>
+                    <label class="carbon-field">
+                        <span>Home electricity <small>kWh / month</small></span>
+                        <input type="number" id="calc-kwh" min="0" max="100000" step="1" value="450" oninput="calculateFootprint()">
+                    </label>
+                    <label class="carbon-field">
+                        <span>Flights <small>per year</small></span>
+                        <input type="number" id="calc-flights" min="0" max="120" step="1" value="4" oninput="calculateFootprint()">
+                    </label>
+                    <div class="carbon-field-pair">
+                        <label class="carbon-field">
+                            <span>Commute days <small>this month</small></span>
+                            <input type="number" id="carbon-commute-days" min="0" max="31" step="1" value="20" oninput="calculateFootprint()">
+                        </label>
+                        <label class="carbon-field">
+                            <span>Round trip <small>km / day</small></span>
+                            <input type="number" id="carbon-commute-distance" min="0" max="2000" step="1" value="24" oninput="calculateFootprint()">
+                        </label>
+                    </div>
+                    <label class="carbon-field">
+                        <span>Commute mode</span>
+                        <select id="carbon-commute-mode" onchange="calculateFootprint()">
+                            <option value="car">Car · 170 g CO₂ / passenger-km</option>
+                            <option value="transit">Public transit · 50 g CO₂ / passenger-km</option>
+                            <option value="active">Walk or cycle · 0 direct emissions</option>
+                        </select>
+                    </label>
+                    <label class="carbon-field">
+                        <span>Monthly CO₂ target <small>metric tons</small></span>
+                        <input type="number" id="carbon-monthly-target" min="0.01" max="100" step="0.01" value="0.40" oninput="calculateFootprint()">
+                    </label>
+                    <p class="carbon-privacy-note">Saved in this browser only. Estimates use broad-average emissions factors.</p>
+                </div>
+
+                <div class="carbon-dashboard-results" aria-live="polite">
+                    <div class="carbon-dashboard-heading carbon-results-heading">
+                        <span id="carbon-dashboard-greeting">PERSONAL FOOTPRINT</span>
+                        <h3>Monthly CO₂</h3>
+                    </div>
+                    <div class="carbon-monthly-total"><strong id="carbon-monthly-total">0.46</strong><span>metric tons</span></div>
+                    <div class="carbon-breakdown" aria-label="Monthly emissions by source">
+                        <div><span>Home electricity</span><strong id="carbon-electricity-total">0.18 t</strong></div>
+                        <div><span>Flights · monthly average</span><strong id="carbon-flights-total">0.20 t</strong></div>
+                        <div><span>Commute</span><strong id="carbon-commute-total">0.08 t</strong></div>
+                    </div>
+                    <div class="carbon-target-tracker">
+                        <div class="carbon-target-heading"><span>Monthly target</span><strong id="carbon-target-value">0.40 t</strong></div>
+                        <div class="carbon-target-track" role="progressbar" aria-label="Monthly emissions compared with target" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100">
+                            <span id="carbon-target-progress"></span>
+                        </div>
+                        <p id="carbon-target-status">Over target by 0.06 t (15%)</p>
+                    </div>
+                    <div class="carbon-recommendations">
+                        <div class="carbon-recommendations-heading">NEXT BEST MOVES</div>
+                        <ul id="carbon-recommendation-list"></ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="carbon-annual-result">
+                <div>
+                    <div class="text-xs text-gray-400 uppercase font-mono">ESTIMATED ANNUAL FOOTPRINT</div>
+                    <div id="calc-result" class="text-3xl font-editorial text-terraGreen-300 font-bold">4.2 Metric Tons CO₂</div>
+                </div>
+                <button onclick="openCertificateModal()" class="px-6 py-3 rounded-full bg-terraGreen-500 hover:bg-terraGreen-400 text-xs font-bold uppercase tracking-widest text-white transition-colors">
+                    CLAIM OFFSET CERTIFICATE →
+                </button>
+            </div>
+        </div>
+
+        <div class="certificate-library-shell max-w-4xl mx-auto mt-10">
+            <div class="certificate-library-heading">
+                <div>
+                    <span>YOUR ISSUED RECORDS</span>
+                    <h3>Verified certificate library</h3>
+                </div>
+                <span id="certificate-library-count">0 CERTIFICATES</span>
+            </div>
+            <div class="certificate-history-chart-wrap">
+                <div class="certificate-history-title">
+                    <span>ANNUAL FOOTPRINT ESTIMATES</span>
+                    <span>Compare certificate history</span>
+                </div>
+                <div class="certificate-history-chart">
+                    <canvas id="certificate-history-chart" aria-label="Certificate impact history chart"></canvas>
+                </div>
+            </div>
+            <div id="certificate-history-list" class="certificate-history-list" aria-live="polite"></div>
+        </div>
+    </section>
+
+    <!-- 5. TERRA NOVA JOURNAL / INSIGHTS SECTION -->
+    <section id="journal" class="relative py-28 px-6 lg:px-16 bg-navy-900 text-white border-t border-white/5">
+        <div class="max-w-7xl mx-auto space-y-12">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+                <div>
+                    <div class="inline-flex items-center space-x-3 text-xs tracking-[0.3em] text-terraGreen-400 uppercase font-medium">
+                        <span class="w-6 h-[1px] bg-terraGreen-400"></span>
+                        <span>PUBLICATIONS & INSIGHTS</span>
+                    </div>
+                    <h2 class="font-editorial text-3xl sm:text-5xl tracking-wide uppercase text-white mt-2">
+                        THE TERRA NOVA JOURNAL
+                    </h2>
+                </div>
+                <!-- Filter Category Tabs -->
+                <div class="flex flex-wrap gap-2 text-xs font-mono">
+                    <button onclick="filterJournal('all')" class="journal-tag active px-4 py-1.5 rounded-full border border-white/30 text-white">ALL</button>
+                    <button onclick="filterJournal('tech')" class="journal-tag px-4 py-1.5 rounded-full border border-white/20 text-gray-400 hover:text-white">CLIMATE TECH</button>
+                    <button onclick="filterJournal('bio')" class="journal-tag px-4 py-1.5 rounded-full border border-white/20 text-gray-400 hover:text-white">BIODIVERSITY</button>
+                    <button onclick="filterJournal('arch')" class="journal-tag px-4 py-1.5 rounded-full border border-white/20 text-gray-400 hover:text-white">ARCHITECTURE</button>
+                </div>
+            </div>
+
+            <!-- Articles Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <article class="journal-card tech bg-navy-950 rounded-xl overflow-hidden border border-white/10 group">
+                    <div class="aspect-video overflow-hidden">
+                        <img src="assets/hero_bg_2.webp" alt="Offshore Wind Grids" loading="lazy" decoding="async" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    </div>
+                    <div class="p-6 space-y-3">
+                        <span class="text-[10px] font-bold text-terraGreen-400 tracking-widest uppercase">CLIMATE TECH • SEPT 2026</span>
+                        <h3 class="font-bold text-base text-white group-hover:text-terraGreen-300 transition-colors">The Future of Next-Gen Offshore Wind Floating Grids</h3>
+                        <p class="text-xs text-gray-400 font-light leading-relaxed">How deep-sea floating wind turbines can supply 40% of global industrial electricity needs.</p>
+                    </div>
+                </article>
+
+                <article class="journal-card bio bg-navy-950 rounded-xl overflow-hidden border border-white/10 group">
+                    <div class="aspect-video overflow-hidden">
+                        <img src="assets/solution_ecosystems.webp" alt="Rainforest Canopy" loading="lazy" decoding="async" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    </div>
+                    <div class="p-6 space-y-3">
+                        <span class="text-[10px] font-bold text-terraGreen-400 tracking-widest uppercase">BIODIVERSITY • AUG 2026</span>
+                        <h3 class="font-bold text-base text-white group-hover:text-terraGreen-300 transition-colors">Restoring Rainforest Corridors with AI Drone Seeds</h3>
+                        <p class="text-xs text-gray-400 font-light leading-relaxed">Automated reforestation dropping native biodiverse seed pods across 10,000 hectares daily.</p>
+                    </div>
+                </article>
+
+                <article class="journal-card arch bg-navy-950 rounded-xl overflow-hidden border border-white/10 group">
+                    <div class="aspect-video overflow-hidden">
+                        <img src="assets/solution_communities.webp" alt="Eco Architecture" loading="lazy" decoding="async" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    </div>
+                    <div class="p-6 space-y-3">
+                        <span class="text-[10px] font-bold text-terraGreen-400 tracking-widest uppercase">ARCHITECTURE • JUL 2026</span>
+                        <h3 class="font-bold text-base text-white group-hover:text-terraGreen-300 transition-colors">Mass Timber & Glass: Living Architectural Habitats</h3>
+                        <p class="text-xs text-gray-400 font-light leading-relaxed">Designing carbon-negative residential structures surrounded by natural wetlands.</p>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- 6. EXECUTIVE TEAM SHOWCASE -->
+    <section id="team" class="relative py-28 px-6 lg:px-16 bg-navy-950 text-white border-t border-white/5">
+        <div class="max-w-7xl mx-auto space-y-12">
+            <div class="text-center space-y-4 max-w-2xl mx-auto">
+                <div class="inline-flex items-center space-x-3 text-xs tracking-[0.3em] text-terraGreen-400 uppercase font-medium">
+                    <span class="w-6 h-[1px] bg-terraGreen-400"></span>
+                    <span>LEADERSHIP & SCIENTISTS</span>
+                    <span class="w-6 h-[1px] bg-terraGreen-400"></span>
+                </div>
+                <h2 class="font-editorial text-3xl sm:text-5xl tracking-wide uppercase text-white">
+                    OUR SCIENTIFIC LEADERSHIP
+                </h2>
+                <p class="text-gray-400 text-sm font-light">
+                    Guided by world-renowned climate technologists, ecological engineers, and renewable energy pioneers.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="p-6 rounded-xl bg-navy-900 border border-white/10 space-y-4 group hover:border-terraGreen-400/50 transition-all">
+                    <div class="w-16 h-16 rounded-full bg-terraGreen-500/20 border border-terraGreen-400 flex items-center justify-center font-editorial text-xl font-bold text-terraGreen-300">
+                        EV
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-base text-white">Dr. Elena Vance</h3>
+                        <div class="text-xs text-terraGreen-400 font-mono uppercase">Chief Climate Scientist</div>
+                    </div>
+                    <p class="text-xs text-gray-400 font-light leading-relaxed">Former IPCC lead researcher with 18+ years in atmospheric carbon capture modeling.</p>
+                </div>
+
+                <div class="p-6 rounded-xl bg-navy-900 border border-white/10 space-y-4 group hover:border-terraGreen-400/50 transition-all">
+                    <div class="w-16 h-16 rounded-full bg-terraGreen-500/20 border border-terraGreen-400 flex items-center justify-center font-editorial text-xl font-bold text-terraGreen-300">
+                        MS
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-base text-white">Marcus Sterling</h3>
+                        <div class="text-xs text-terraGreen-400 font-mono uppercase">VP Clean Energy</div>
+                    </div>
+                    <p class="text-xs text-gray-400 font-light leading-relaxed">Pioneered offshore wind matrix grid infrastructure across the Atlantic basin.</p>
+                </div>
+
+                <div class="p-6 rounded-xl bg-navy-900 border border-white/10 space-y-4 group hover:border-terraGreen-400/50 transition-all">
+                    <div class="w-16 h-16 rounded-full bg-terraGreen-500/20 border border-terraGreen-400 flex items-center justify-center font-editorial text-xl font-bold text-terraGreen-300">
+                        AC
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-base text-white">Aria Chen</h3>
+                        <div class="text-xs text-terraGreen-400 font-mono uppercase">Lead Eco Architect</div>
+                    </div>
+                    <p class="text-xs text-gray-400 font-light leading-relaxed">Specializes in zero-carbon mass timber eco-cities and biophilic design.</p>
+                </div>
+
+                <div class="p-6 rounded-xl bg-navy-900 border border-white/10 space-y-4 group hover:border-terraGreen-400/50 transition-all">
+                    <div class="w-16 h-16 rounded-full bg-terraGreen-500/20 border border-terraGreen-400 flex items-center justify-center font-editorial text-xl font-bold text-terraGreen-300">
+                        KT
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-base text-white">Kaelen Thorne</h3>
+                        <div class="text-xs text-terraGreen-400 font-mono uppercase">Head of Global Ops</div>
+                    </div>
+                    <p class="text-xs text-gray-400 font-light leading-relaxed">Overseeing deployment across 24 global sustainable restoration project sites.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 7. FULL-SCREEN 360° VR PROJECT TOUR MODAL -->
+    <div id="vr-tour-modal" data-accessible-modal aria-hidden="true" class="fixed inset-0 z-50 bg-black/95 backdrop-blur-md hidden items-center justify-center p-4 transition-all duration-500 opacity-0">
+        <div role="dialog" aria-modal="true" aria-labelledby="vr-modal-title" tabindex="-1" class="relative w-full max-w-6xl h-[80vh] bg-navy-950 rounded-2xl overflow-hidden border border-white/20 shadow-2xl flex flex-col">
+            <div class="flex justify-between items-center px-6 py-4 border-b border-white/10 bg-navy-900">
+                <div class="flex items-center gap-3">
+                    <span class="w-3 h-3 rounded-full bg-terraGreen-400 animate-pulse"></span>
+                    <span id="vr-modal-title" class="text-xs font-bold uppercase tracking-widest text-white">TERRA NOVA 360° VR VIRTUAL TOUR</span>
+                </div>
+                <button type="button" aria-label="Close virtual tour" onclick="closeVrModal()" class="w-8 h-8 rounded-full border border-white/20 flex items-center justify-center text-gray-400 hover:text-white hover:border-white transition-colors">✕</button>
+            </div>
+            <div class="relative flex-1 bg-black overflow-hidden flex items-center justify-center">
+                <img id="vr-image" src="assets/hero_bg.webp" alt="VR View" loading="lazy" decoding="async" class="w-full h-full object-cover scale-125 transition-transform duration-300 cursor-grab">
+                <div class="absolute bottom-6 left-6 bg-navy-900/80 backdrop-blur-md border border-white/20 px-4 py-2 rounded-full text-xs text-white">
+                    💡 Drag or scroll to rotate 360° environment view
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 8. PERSONALIZED OFFSET CERTIFICATE MODAL -->
+    <div id="certificate-modal" data-accessible-modal aria-hidden="true" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden items-center justify-center p-4 transition-all duration-500 opacity-0">
+        <div role="dialog" aria-modal="true" aria-labelledby="certificate-modal-title" tabindex="-1" class="certificate-modal-panel relative w-full max-w-4xl bg-navy-950 rounded-2xl p-5 sm:p-8 border border-terraGreen-400/50 shadow-2xl text-white space-y-5 max-h-[94vh] overflow-y-auto">
+            <button type="button" aria-label="Close certificate dialog" onclick="closeCertificateModal()" class="absolute top-6 right-6 w-8 h-8 rounded-full border border-white/20 flex items-center justify-center text-gray-400 hover:text-white transition-colors">✕</button>
+            <div class="certificate-modal-heading">
+                <span>PERSONAL IMPACT RECORD</span>
+                <h3 id="certificate-modal-title">Issue verified certificate</h3>
+                <p>Generate an issuer-signed record of your annual footprint estimate.</p>
+            </div>
+            <label class="certificate-recipient-field">
+                <span>Certificate recipient name</span>
+                <input type="text" id="certificate-recipient-name" maxlength="60" required autocomplete="name" oninput="previewCertificateRecipient()">
+            </label>
+            <div class="certificate-preview-frame">
+                <canvas id="certificate-preview" width="1200" height="800" aria-label="Certificate preview"></canvas>
+            </div>
+            <p id="certificate-action-status" class="certificate-action-status" role="status">Generate a signed certificate to enable downloads and sharing.</p>
+            <div class="certificate-action-bar">
+                <button id="certificate-issue-btn" type="button" onclick="issueVerifiedCertificate()" class="certificate-action-primary">Generate & save</button>
+                <button id="certificate-png-btn" type="button" onclick="downloadRealCertificate('png')" class="certificate-action-button" disabled>Download PNG</button>
+                <button id="certificate-pdf-btn" type="button" onclick="downloadRealCertificate('pdf')" class="certificate-action-button" disabled>Download PDF</button>
+                <button id="certificate-copy-btn" type="button" onclick="shareCertificate('copy')" class="certificate-action-button" disabled>Copy verify link</button>
+            </div>
+            <div class="certificate-social-actions" aria-label="Share certificate">
+                <span>SHARE</span>
+                <button type="button" onclick="shareCertificate('linkedin')">LinkedIn</button>
+                <button type="button" onclick="shareCertificate('facebook')">Facebook</button>
+                <button type="button" onclick="shareCertificate('x')">X</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 9. TERRA AI ASSISTANT FLOATING CHATBOT -->
+    <div id="terra-ai-chat" class="fixed bottom-6 right-6 z-[100] pointer-events-auto">
+        <!-- Floating Toggle Button -->
+        <button type="button" aria-label="Open Terra AI assistant" aria-controls="terra-ai-drawer" aria-expanded="false" onclick="toggleAiChat()" class="w-14 h-14 rounded-full bg-terraGreen-500 hover:bg-terraGreen-400 text-white shadow-2xl border border-white/40 flex items-center justify-center transition-all duration-300 hover:scale-110 group cursor-pointer">
+            <span class="text-2xl">🤖</span>
+            <span class="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-terraGreen-300 border-2 border-navy-950 animate-ping"></span>
+        </button>
+
+        <!-- Chat Drawer Window -->
+        <div id="terra-ai-drawer" role="region" aria-label="Terra AI assistant" class="hidden absolute bottom-20 right-0 w-80 sm:w-96 bg-navy-950 border border-white/20 rounded-2xl shadow-2xl flex-col overflow-hidden text-white z-[101]">
+            <div class="p-4 bg-navy-900 border-b border-white/10 flex justify-between items-center">
+                <div class="flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-terraGreen-400 animate-pulse"></span>
+                    <span class="text-xs font-bold uppercase tracking-wider">TERRA AI ASSISTANT</span>
+                </div>
+                <button type="button" aria-label="Close Terra AI assistant" onclick="toggleAiChat()" class="text-gray-400 hover:text-white text-xs cursor-pointer">✕</button>
+            </div>
+            <div id="chat-messages" class="p-4 h-72 overflow-y-auto space-y-3 text-xs font-light">
+                <div class="bg-white/10 p-3 rounded-xl max-w-[85%] leading-relaxed">
+                    👋 Welcome! I am Terra AI. How can I help you explore our clean energy initiatives or calculate carbon offsets today?
+                </div>
+            </div>
+            <div class="p-3 border-t border-white/10 bg-navy-900 flex gap-2">
+                <input type="text" id="chat-input" aria-label="Message for Terra AI assistant" placeholder="Ask Terra AI a question..." onkeydown="if(event.key==='Enter') sendChatMessage()" class="flex-1 px-3 py-2 rounded-lg bg-navy-950 border border-white/20 text-xs text-white focus:outline-none focus:border-terraGreen-400">
+                <button id="chat-send-btn" type="button" onclick="sendChatMessage()" aria-label="Send message" class="px-3 py-2 rounded-lg bg-terraGreen-500 hover:bg-terraGreen-400 text-xs text-white font-bold cursor-pointer">→</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ABOUT SECTION -->
+    <section id="about" class="relative py-28 px-6 lg:px-16 bg-navy-950 text-white border-t border-white/5">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            <div class="lg:col-span-5 relative">
+                <div class="rounded-2xl overflow-hidden border border-white/10 shadow-2xl">
+                    <img src="assets/solution_communities.webp" alt="Sustainable Architecture" loading="lazy" decoding="async" class="w-full h-[480px] object-cover">
+                </div>
+                <div class="absolute -bottom-6 -right-6 bg-terraGreen-500 text-white p-6 rounded-xl shadow-2xl hidden sm:block max-w-xs">
+                    <div class="text-xs uppercase tracking-widest font-semibold mb-1">OUR PHILOSOPHY</div>
+                    <p class="text-xs font-light leading-relaxed">Nature possesses the blue print for absolute efficiency. We build technology that honors it.</p>
+                </div>
+            </div>
+            <div class="lg:col-span-7 space-y-6 lg:pl-8">
+                <div class="inline-flex items-center space-x-3 text-xs tracking-[0.3em] text-terraGreen-400 uppercase font-medium">
+                    <span class="w-6 h-[1px] bg-terraGreen-400"></span>
+                    <span>ABOUT TERRA NOVA</span>
+                </div>
+                <h2 class="font-editorial text-3xl sm:text-5xl tracking-wide uppercase leading-tight">
+                    WHERE TECHNOLOGY HARMONIZES WITH ECOLOGY
+                </h2>
+                <p class="text-gray-300 text-base leading-relaxed font-light">
+                    Founded with a vision to accelerate planet-wide ecological recovery, Terra Nova partners with world-leading environmental scientists, clean tech innovators, and forward-thinking governments. We design scalable solutions that reduce emissions, restore wildlife corridors, and promote long-term climate stability.
+                </p>
+                <div class="pt-4 flex flex-wrap gap-4">
+                    <button onclick="openMovementModal()" class="px-8 py-3 rounded-full bg-white text-navy-950 text-xs font-bold uppercase tracking-widest hover:bg-gray-200 transition-colors">
+                        GET INVOLVED TODAY →
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONVERSION & CONTACT SECTION -->
+    <section id="plans" class="relative border-t border-white/10 bg-[#0b121a] px-6 py-24 text-white lg:px-16">
+        <div class="mx-auto max-w-7xl space-y-20">
+            <div class="grid gap-10 lg:grid-cols-[0.8fr,1.2fr] lg:items-end">
+                <div class="space-y-5">
+                    <div class="inline-flex items-center gap-3 text-xs uppercase tracking-[0.3em] text-terraGreen-300"><span class="h-px w-6 bg-terraGreen-400"></span><span>WAYS TO TAKE PART</span></div>
+                    <h2 class="font-editorial text-3xl uppercase leading-tight sm:text-5xl">A CLEAR PATH TO CLIMATE ACTION</h2>
+                </div>
+                <p class="max-w-2xl text-sm font-light leading-relaxed text-gray-300">Start as an individual, explore organizational participation, or discuss a project partnership. No paid checkout is offered here; tailored plans are scoped through a conversation.</p>
+            </div>
+
+            <div class="grid gap-4 lg:grid-cols-3">
+                <article class="border-t border-terraGreen-400/60 bg-white/[0.025] p-6 sm:p-8">
+                    <p class="text-xs uppercase tracking-[0.24em] text-terraGreen-300">Community</p>
+                    <h3 class="mt-4 font-editorial text-3xl">Free</h3>
+                    <p class="mt-3 min-h-12 text-sm leading-relaxed text-gray-300">For people following restoration and clean-energy work.</p>
+                    <ul class="mt-6 space-y-3 text-sm text-gray-300"><li>Member account and profile</li><li>Explore public project details</li><li>Generate a signed footprint certificate</li></ul>
+                    <a href="javascript:void(0)" onclick="openAuthModal('register')" class="mt-8 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.18em] text-terraGreen-200 hover:text-white">Create a free account <span aria-hidden="true">→</span></a>
+                </article>
+                <article class="border-t border-white/20 bg-white/[0.025] p-6 sm:p-8">
+                    <p class="text-xs uppercase tracking-[0.24em] text-gray-300">Organization</p>
+                    <h3 class="mt-4 font-editorial text-3xl">Tailored scope</h3>
+                    <p class="mt-3 min-h-12 text-sm leading-relaxed text-gray-300">For teams exploring participation and measurable project alignment.</p>
+                    <ul class="mt-6 space-y-3 text-sm text-gray-300"><li>Discuss goals and geography</li><li>Review relevant initiatives</li><li>Agree next steps before any commitment</li></ul>
+                    <a href="#contact-request" data-contact-plan="organization" class="mt-8 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.18em] text-terraGreen-200 hover:text-white">Discuss organization plans <span aria-hidden="true">→</span></a>
+                </article>
+                <article class="border-t border-white/20 bg-white/[0.025] p-6 sm:p-8">
+                    <p class="text-xs uppercase tracking-[0.24em] text-gray-300">Project partner</p>
+                    <h3 class="mt-4 font-editorial text-3xl">Tailored scope</h3>
+                    <p class="mt-3 min-h-12 text-sm leading-relaxed text-gray-300">For local groups, researchers, and operators proposing shared work.</p>
+                    <ul class="mt-6 space-y-3 text-sm text-gray-300"><li>Share your project context</li><li>Discuss roles and expected outcomes</li><li>Receive a follow-up from the team</li></ul>
+                    <a href="#contact-request" data-contact-plan="project-partner" class="mt-8 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.18em] text-terraGreen-200 hover:text-white">Start a partner conversation <span aria-hidden="true">→</span></a>
+                </article>
+            </div>
+
+            <div id="partner-pathways" class="grid gap-10 border-y border-white/10 py-10 lg:grid-cols-[0.8fr,1.2fr] lg:items-center">
+                <div>
+                    <p class="text-xs uppercase tracking-[0.25em] text-terraGreen-300">Collaboration network</p>
+                    <h3 class="mt-3 font-editorial text-2xl uppercase">Built through shared work</h3>
+                    <p class="mt-3 text-sm leading-relaxed text-gray-400">We welcome collaborators across these fields. These are partner pathways, not endorsements or claims of formal affiliation.</p>
+                </div>
+                <div class="grid grid-cols-2 gap-x-6 gap-y-8 text-center sm:grid-cols-4" aria-label="Partner pathways">
+                    <div class="border-l border-terraGreen-400/50 py-2 text-xs font-bold uppercase tracking-[0.16em] text-gray-200">Community<br>networks</div>
+                    <div class="border-l border-terraGreen-400/50 py-2 text-xs font-bold uppercase tracking-[0.16em] text-gray-200">Research<br>& science</div>
+                    <div class="border-l border-terraGreen-400/50 py-2 text-xs font-bold uppercase tracking-[0.16em] text-gray-200">Clean<br>energy</div>
+                    <div class="border-l border-terraGreen-400/50 py-2 text-xs font-bold uppercase tracking-[0.16em] text-gray-200">Public<br>sector</div>
+                </div>
+            </div>
+
+            <div class="space-y-7">
+                <div class="max-w-2xl space-y-3">
+                    <p class="text-xs uppercase tracking-[0.25em] text-terraGreen-300">Trust & accountability</p>
+                    <h3 class="font-editorial text-2xl uppercase sm:text-3xl">Evidence you can check</h3>
+                </div>
+                <div class="grid gap-4 md:grid-cols-3">
+                    <div class="flex items-start gap-4 border border-white/10 p-5"><span class="text-terraGreen-300" aria-hidden="true">✓</span><div><h4 class="text-sm font-bold">Signed certificates</h4><p class="mt-2 text-xs leading-relaxed text-gray-400">Issued records include a signature that can be independently checked on this site.</p></div></div>
+                    <div class="flex items-start gap-4 border border-white/10 p-5"><span class="text-terraGreen-300" aria-hidden="true">✓</span><div><h4 class="text-sm font-bold">Project-level details</h4><p class="mt-2 text-xs leading-relaxed text-gray-400">Initiatives show their stated region, status, impact, and funding figures.</p></div></div>
+                    <div class="flex items-start gap-4 border border-white/10 p-5"><span class="text-terraGreen-300" aria-hidden="true">✓</span><div><h4 class="text-sm font-bold">Tracked inquiries</h4><p class="mt-2 text-xs leading-relaxed text-gray-400">Contact requests receive a reference and enter a follow-up queue.</p></div></div>
+                </div>
+                <p class="text-[11px] text-gray-500">These are product capabilities, not third-party certifications or accreditation claims.</p>
+            </div>
+
+            <div id="faq" class="grid gap-10 border-t border-white/10 pt-16 lg:grid-cols-2">
+                <div>
+                    <p class="text-xs uppercase tracking-[0.25em] text-terraGreen-300">FAQ</p>
+                    <h3 class="mt-3 font-editorial text-3xl uppercase">Good questions first</h3>
+                </div>
+                <div class="divide-y divide-white/10">
+                    <details class="group py-5" open><summary class="cursor-pointer list-none pr-8 text-sm font-semibold">Is there a paid membership or checkout?</summary><p class="mt-3 text-sm leading-relaxed text-gray-400">No. Community membership is free, and this site does not collect payments. Organizational and project partnership scopes are discussed before any commitment.</p></details>
+                    <details class="group py-5"><summary class="cursor-pointer list-none pr-8 text-sm font-semibold">Are the certificates third-party carbon credits?</summary><p class="mt-3 text-sm leading-relaxed text-gray-400">No. They are signed records generated by Terra Nova from user-provided footprint estimates; they are not offsets, credits, or an independent emissions audit.</p></details>
+                    <details class="group py-5"><summary class="cursor-pointer list-none pr-8 text-sm font-semibold">How do I propose a project partnership?</summary><p class="mt-3 text-sm leading-relaxed text-gray-400">Choose Project partner below, share your organization and project context, and the request will be recorded for administrator follow-up.</p></details>
+                    <details class="group py-5"><summary class="cursor-pointer list-none pr-8 text-sm font-semibold">What happens after I send the contact form?</summary><p class="mt-3 text-sm leading-relaxed text-gray-400">Your request is stored with a reference number and appears in the admin inquiry queue. The team can review it, reply to your email, and update its follow-up status.</p></details>
+                </div>
+            </div>
+
+            <div id="contact-request" class="grid gap-10 border-t border-white/10 pt-16 lg:grid-cols-[0.8fr,1.2fr]">
+                <div class="space-y-4">
+                    <p class="text-xs uppercase tracking-[0.25em] text-terraGreen-300">Contact the team</p>
+                    <h3 class="font-editorial text-3xl uppercase sm:text-4xl">Let’s make the next step concrete</h3>
+                    <p class="max-w-md text-sm leading-relaxed text-gray-400">Tell us what you’re exploring. Required fields are validated before the request is added to our follow-up queue.</p>
+                </div>
+                <div>
+                    <form id="contact-form" onsubmit="handleContactSubmit(event)" class="grid gap-4 sm:grid-cols-2" novalidate>
+                        <div><label for="contact-name" class="mb-1.5 block text-xs font-semibold text-gray-300">Name *</label><input id="contact-name" name="name" required minlength="2" maxlength="100" autocomplete="name" class="w-full rounded-lg border border-white/15 bg-navy-950 px-4 py-3 text-sm text-white outline-none focus:border-terraGreen-300"></div>
+                        <div><label for="contact-email" class="mb-1.5 block text-xs font-semibold text-gray-300">Work or personal email *</label><input id="contact-email" name="email" type="email" required maxlength="254" autocomplete="email" class="w-full rounded-lg border border-white/15 bg-navy-950 px-4 py-3 text-sm text-white outline-none focus:border-terraGreen-300"></div>
+                        <div><label for="contact-organization" class="mb-1.5 block text-xs font-semibold text-gray-300">Organization <span class="font-normal text-gray-500">(optional)</span></label><input id="contact-organization" name="organization" maxlength="160" autocomplete="organization" class="w-full rounded-lg border border-white/15 bg-navy-950 px-4 py-3 text-sm text-white outline-none focus:border-terraGreen-300"></div>
+                        <div><label for="contact-plan" class="mb-1.5 block text-xs font-semibold text-gray-300">I’m interested in *</label><select id="contact-plan" name="plan" required class="w-full rounded-lg border border-white/15 bg-navy-950 px-4 py-3 text-sm text-white outline-none focus:border-terraGreen-300"><option value="general">General question</option><option value="community">Community</option><option value="organization">Organization</option><option value="project-partner">Project partnership</option></select></div>
+                        <div class="sm:col-span-2"><label for="contact-message" class="mb-1.5 block text-xs font-semibold text-gray-300">How can we help? *</label><textarea id="contact-message" name="message" required minlength="20" maxlength="4000" rows="5" placeholder="Share a little context (20 characters minimum)" class="w-full resize-y rounded-lg border border-white/15 bg-navy-950 px-4 py-3 text-sm text-white outline-none focus:border-terraGreen-300"></textarea></div>
+                        <div class="sm:col-span-2 flex flex-col gap-3 sm:flex-row sm:items-center"><button id="contact-submit" type="submit" class="inline-flex items-center justify-center gap-3 rounded-full bg-terraGreen-500 px-7 py-3.5 text-xs font-bold uppercase tracking-[0.16em] text-white transition hover:bg-terraGreen-400">Send inquiry <span aria-hidden="true">→</span></button><p class="text-[11px] text-gray-500">We use these details only to respond to your request.</p></div>
+                    </form>
+                    <div id="contact-status" class="mt-4 hidden border border-terraGreen-400/30 bg-terraGreen-500/10 p-4 text-sm text-terraGreen-200" role="status" aria-live="polite"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER / LOWER CONTENT SECTION -->
+    <footer id="contact" class="relative pt-20 pb-12 px-6 lg:px-16 bg-navy-900 text-white border-t border-white/10">
+        <div class="max-w-7xl mx-auto space-y-16">
+            <!-- Top Footer Grid: Branding | Navigation Columns | Newsletter -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 items-start">
+                
+                <!-- Column 1: Brand & Tagline (lg:col-span-4) -->
+                <div class="lg:col-span-4 space-y-6">
+                    <!-- Brand Logo -->
+                    <a href="#hero" class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-full border border-white/30 flex items-center justify-center">
+                            <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <circle cx="12" cy="12" r="9" />
+                                <path d="M12 3v18M12 12c-3.5 0-6-2.5-6-6M12 12c3.5 0 6 2.5 6 6" />
+                            </svg>
+                        </div>
+                        <span class="font-sans text-sm font-semibold tracking-[0.25em] text-white">TERRA NOVA</span>
+                    </a>
+
+                    <!-- Tagline Paragraph -->
+                    <p class="text-xs text-gray-400 font-light leading-relaxed max-w-sm">
+                        Innovating for a cleaner planet, stronger communities, and a more sustainable tomorrow.
+                    </p>
+
+                    <!-- Divider & Bottom Subtext -->
+                    <div class="pt-4 border-t border-white/10 space-y-2">
+                        <div class="text-[11px] tracking-[0.25em] text-gray-500 uppercase font-medium flex items-center gap-3">
+                            <span>PEOPLE</span>
+                            <span>•</span>
+                            <span>PLANET</span>
+                            <span>•</span>
+                            <span>POSSIBILITY</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Middle Columns: Navigation (lg:col-span-5) -->
+                <div class="lg:col-span-5 grid grid-cols-2 sm:grid-cols-4 gap-6">
+                    <!-- Nav Col 1: SOLUTIONS -->
+                    <div class="space-y-4">
+                        <h4 class="text-xs font-bold uppercase tracking-widest text-white">SOLUTIONS</h4>
+                        <ul class="space-y-2.5 text-xs text-gray-400 font-light">
+                            <li><a href="#solutions" class="hover:text-white transition-colors">Clean Energy</a></li>
+                            <li><a href="#solutions" class="hover:text-white transition-colors">Ecosystems</a></li>
+                            <li><a href="#solutions" class="hover:text-white transition-colors">Communities</a></li>
+                            <li><a href="#solutions" class="hover:text-white transition-colors">Our Approach</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Nav Col 2: OUR IMPACT -->
+                    <div class="space-y-4">
+                        <h4 class="text-xs font-bold uppercase tracking-widest text-white">OUR IMPACT</h4>
+                        <ul class="space-y-2.5 text-xs text-gray-400 font-light">
+                            <li><a href="#impact" class="hover:text-white transition-colors">People</a></li>
+                            <li><a href="#impact" class="hover:text-white transition-colors">Planet</a></li>
+                            <li><a href="#impact" class="hover:text-white transition-colors">Possibility</a></li>
+                            <li><a href="/stories.html" class="hover:text-white transition-colors">Stories</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Nav Col 3: ABOUT -->
+                    <div class="space-y-4">
+                        <h4 class="text-xs font-bold uppercase tracking-widest text-white">ABOUT</h4>
+                        <ul class="space-y-2.5 text-xs text-gray-400 font-light">
+                            <li><a href="#about" class="hover:text-white transition-colors">Our Mission</a></li>
+                            <li><a href="#about" class="hover:text-white transition-colors">Our Team</a></li>
+                            <li><a href="#partner-pathways" class="hover:text-white transition-colors">Partners</a></li>
+                            <li><a href="#about" class="hover:text-white transition-colors">News</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Nav Col 4: SUPPORT -->
+                    <div id="careers" class="space-y-4">
+                        <h4 class="text-xs font-bold uppercase tracking-widest text-white">SUPPORT</h4>
+                        <ul class="space-y-2.5 text-xs text-gray-400 font-light">
+                            <li><a href="#contact-request" class="hover:text-white transition-colors">Contact</a></li>
+                            <li><a href="#plans" class="hover:text-white transition-colors">Plans & partnerships</a></li>
+                            <li><a href="javascript:void(0)" onclick="openMovementModal()" class="hover:text-white transition-colors">Join the Movement</a></li>
+                            <li><a href="#careers" class="hover:text-white transition-colors">Work With Us</a></li>
+                            <li><a href="#faq" class="hover:text-white transition-colors">FAQs</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Column 3: STAY INFORMED Newsletter (lg:col-span-3) -->
+                <div class="lg:col-span-3 space-y-4">
+                    <h4 class="text-xs font-bold uppercase tracking-widest text-white">STAY INFORMED</h4>
+                    <p class="text-xs text-gray-400 font-light leading-relaxed">
+                        Get updates on our impact, stories and ways to get involved.
+                    </p>
+
+                    <!-- Newsletter Input Box -->
+                    <form onsubmit="handleNewsletterSubmit(event)" class="relative mt-2">
+                        <input type="email" aria-label="Email address for newsletter subscription" required placeholder="Your email address" class="w-full py-2.5 pl-4 pr-12 rounded-lg bg-navy-950 border border-white/20 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-terraGreen-400 transition-colors">
+                        <button type="submit" class="absolute right-1 top-1/2 -translate-y-1/2 w-8 h-8 rounded-md bg-white/10 hover:bg-terraGreen-500 flex items-center justify-center text-white text-xs transition-colors">
+                            →
+                        </button>
+                    </form>
+                    <div id="newsletter-toast" class="hidden text-[11px] text-terraGreen-300 font-medium pt-1">
+                        ✓ Thank you! You are subscribed to Terra Nova updates.
+                    </div>
+
+                    <!-- Social Icons -->
+                    <div class="flex items-center space-x-4 pt-3 text-gray-400">
+                        <a href="javascript:void(0)" class="w-8 h-8 rounded-full border border-white/20 flex items-center justify-center hover:text-white hover:border-white hover:bg-white/10 transition-all text-xs" aria-label="Instagram">
+                            <i class="fa-brands fa-instagram"></i>
+                        </a>
+                        <a href="javascript:void(0)" class="w-8 h-8 rounded-full border border-white/20 flex items-center justify-center hover:text-white hover:border-white hover:bg-white/10 transition-all text-xs" aria-label="LinkedIn">
+                            <i class="fa-brands fa-linkedin-in"></i>
+                        </a>
+                        <a href="javascript:void(0)" class="w-8 h-8 rounded-full border border-white/20 flex items-center justify-center hover:text-white hover:border-white hover:bg-white/10 transition-all text-xs" aria-label="YouTube">
+                            <i class="fa-brands fa-youtube"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Legal Bar -->
+            <div class="pt-8 border-t border-white/10 flex flex-col sm:flex-row justify-between items-center text-[11px] text-gray-500 font-light gap-4">
+                <div>
+                    © 2026 Terra Nova. A Cleaner Tomorrow.
+                </div>
+                <div class="flex items-center space-x-6 tracking-wider">
+                    <a href="javascript:void(0)" class="hover:text-gray-300 transition-colors">Privacy</a>
+                    <a href="javascript:void(0)" class="hover:text-gray-300 transition-colors">Terms</a>
+                    <a href="javascript:void(0)" class="hover:text-gray-300 transition-colors">Accessibility</a>
+                    <span class="hidden sm:inline text-gray-700">—</span>
+                    <span class="hidden sm:inline uppercase text-gray-400 tracking-[0.2em]">PEOPLE PLANET POSSIBILITY</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- VIDEO MODAL OVERLAY -->
+    <div id="video-modal" data-accessible-modal aria-hidden="true" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden items-center justify-center p-4 sm:p-8 transition-all duration-500 opacity-0">
+        <div role="dialog" aria-modal="true" aria-labelledby="video-modal-title" tabindex="-1" class="relative w-full max-w-5xl bg-navy-950 rounded-2xl overflow-hidden border border-white/20 shadow-2xl">
+            <!-- Modal Header -->
+            <div class="flex justify-between items-center px-6 py-4 border-b border-white/10 bg-navy-900">
+                <div class="flex items-center gap-3">
+                    <div class="w-3 h-3 rounded-full bg-terraGreen-400 animate-pulse"></div>
+                    <span id="video-modal-title" class="text-xs font-bold uppercase tracking-widest text-white">TERRA NOVA — OUR STORY</span>
+                </div>
+                <button type="button" aria-label="Close story video" onclick="closeVideoModal()" class="w-8 h-8 rounded-full border border-white/20 flex items-center justify-center text-gray-400 hover:text-white hover:border-white transition-colors">
+                    ✕
+                </button>
+            </div>
+            <!-- Video Player container -->
+            <div class="relative aspect-video bg-black flex items-center justify-center">
+                <!-- High quality cinematic story background reel -->
+                <video id="story-video" class="w-full h-full object-cover" controls preload="none" poster="assets/hero_bg.webp" data-lazy-video>
+                    <source data-src="WhatsApp Video 2026-09-29 at 9.10.47 PM.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        </div>
+    </div>
+
+    <!-- JOIN THE MOVEMENT MODAL -->
+    <div id="movement-modal" data-accessible-modal aria-hidden="true" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden items-center justify-center p-4 sm:p-8 transition-all duration-500 opacity-0">
+        <div role="dialog" aria-modal="true" aria-labelledby="movement-modal-title" tabindex="-1" class="relative w-full max-w-lg bg-navy-900 rounded-2xl p-8 border border-white/20 shadow-2xl text-white">
+            <button type="button" aria-label="Close movement signup" onclick="closeMovementModal()" class="absolute top-6 right-6 w-8 h-8 rounded-full border border-white/20 flex items-center justify-center text-gray-400 hover:text-white hover:border-white transition-colors">
+                ✕
+            </button>
+            <div class="space-y-6">
+                <div class="space-y-2">
+                    <div class="text-xs font-bold uppercase tracking-widest text-terraGreen-400">BECOME A MEMBER</div>
+                    <h3 id="movement-modal-title" class="font-editorial text-2xl uppercase text-white">JOIN THE MOVEMENT</h3>
+                    <p class="text-xs text-gray-400 font-light">Partner with Terra Nova to support global ecological restoration and clean energy transition.</p>
+                </div>
+                <form onsubmit="handleMovementSubmit(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-[11px] font-bold uppercase tracking-wider text-gray-300 mb-1">Full Name</label>
+                        <input type="text" name="name" required placeholder="e.g. Alex Morgan" class="w-full px-4 py-2.5 rounded-lg bg-navy-950 border border-white/20 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-terraGreen-400">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold uppercase tracking-wider text-gray-300 mb-1">Email Address</label>
+                        <input type="email" name="email" required placeholder="alex@example.com" class="w-full px-4 py-2.5 rounded-lg bg-navy-950 border border-white/20 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-terraGreen-400">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold uppercase tracking-wider text-gray-300 mb-1">Primary Interest</label>
+                        <select name="interest" class="w-full px-4 py-2.5 rounded-lg bg-navy-950 border border-white/20 text-xs text-white focus:outline-none focus:border-terraGreen-400">
+                            <option>Clean Energy Initiatives</option>
+                            <option>Ecosystem Restoration</option>
+                            <option>Sustainable Architecture</option>
+                            <option>Corporate Partnership</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="w-full py-3.5 rounded-full bg-terraGreen-500 hover:bg-terraGreen-400 text-white text-xs uppercase tracking-widest font-bold transition-all shadow-lg shadow-terraGreen-600/30">
+                        Submit Registration →
+                    </button>
+                </form>
+                <div id="movement-success" class="hidden text-xs text-terraGreen-300 text-center font-medium">
+                    ✓ Registration received! Welcome to Terra Nova.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- USER AUTHENTICATION & INTERACTIVE ECO-DASHBOARD MODAL -->
+    <div id="auth-modal" data-accessible-modal aria-hidden="true" class="fixed inset-0 z-[120] bg-black/90 backdrop-blur-md hidden items-center justify-center p-4 transition-all duration-500 opacity-0 pointer-events-auto">
+        <div role="dialog" aria-modal="true" aria-labelledby="auth-modal-title" tabindex="-1" class="relative w-full max-w-3xl bg-navy-950 rounded-2xl p-6 sm:p-8 border border-white/20 shadow-2xl text-white space-y-6 max-h-[90vh] overflow-y-auto">
+            <button type="button" aria-label="Close member portal" onclick="closeAuthModal()" class="absolute top-5 right-5 w-8 h-8 rounded-full border border-white/20 flex items-center justify-center text-gray-400 hover:text-white hover:border-white transition-colors cursor-pointer">
+                ✕
+            </button>
+            
+            <div class="space-y-2 text-center">
+                <div class="text-xs font-bold uppercase tracking-widest text-terraGreen-400">TERRA NOVA MEMBER PORTAL</div>
+                <h3 id="auth-modal-title" class="font-editorial text-2xl uppercase text-white">PERSONAL ECO-DASHBOARD & PROFILE</h3>
+                <p class="text-xs text-gray-400 font-light">Track your personal environmental impact analytics, monthly carbon offsets, and manage profile credentials.</p>
+            </div>
+
+            <div class="flex justify-center gap-3">
+                <button id="auth-mode-register" type="button" onclick="setAuthMode('register')" class="rounded-full border border-terraGreen-400/60 bg-terraGreen-500/20 px-4 py-2 text-[10px] font-bold uppercase tracking-[0.2em] text-terraGreen-200 hover:bg-terraGreen-500/30">
+                    Create Account
+                </button>
+                <button id="auth-mode-login" type="button" onclick="setAuthMode('login')" class="rounded-full border border-white/15 bg-white/5 px-4 py-2 text-[10px] font-bold uppercase tracking-[0.2em] text-gray-300 hover:bg-white/10">
+                    Login
+                </button>
+            </div>
+
+            <button id="google-auth-btn" type="button" onclick="window.location.assign(getApiUrl('/api/auth/google'))" class="hidden w-full rounded-full border border-white/20 bg-white px-5 py-3 text-xs font-bold uppercase tracking-widest text-navy-950 transition hover:bg-gray-200">
+                Continue with Google
+            </button>
+
+            <!-- Tab Switcher Navigation -->
+            <div class="flex border-b border-white/10 text-xs font-mono">
+                <button id="tab-btn-dashboard" onclick="switchPortalTab('dashboard')" class="flex-1 py-2.5 text-center font-bold uppercase tracking-wider text-terraGreen-300 border-b-2 border-terraGreen-400 transition-all cursor-pointer">
+                    📊 Impact Analytics & Badges
+                </button>
+                <button id="tab-btn-profile" onclick="switchPortalTab('profile')" class="flex-1 py-2.5 text-center font-bold uppercase tracking-wider text-gray-400 border-b-2 border-transparent hover:text-white transition-all cursor-pointer">
+                    👤 Edit Profile & Photo
+                </button>
+            </div>
+
+            <!-- TAB 1: ECO-DASHBOARD & ANALYTICS -->
+            <div id="portal-tab-dashboard" class="space-y-6">
+                <!-- KPI Impact Metrics Cards -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
+                    <div class="bg-navy-900/90 border border-white/10 p-3.5 rounded-xl space-y-1">
+                        <div class="text-[10px] text-gray-400 uppercase tracking-wider font-mono">LIFETIME OFFSET</div>
+                        <div id="dash-co2" class="text-xl font-bold font-editorial text-terraGreen-300">14.2 Tons</div>
+                        <div class="text-[10px] text-gray-400">CO₂ Abated</div>
+                    </div>
+                    <div class="bg-navy-900/90 border border-white/10 p-3.5 rounded-xl space-y-1">
+                        <div class="text-[10px] text-gray-400 uppercase tracking-wider font-mono">TREES PLANTED</div>
+                        <div id="dash-trees" class="text-xl font-bold font-editorial text-white">240 Trees</div>
+                        <div class="text-[10px] text-gray-400">Native Species</div>
+                    </div>
+                    <div class="bg-navy-900/90 border border-white/10 p-3.5 rounded-xl space-y-1">
+                        <div class="text-[10px] text-gray-400 uppercase tracking-wider font-mono">CLEAN ENERGY</div>
+                        <div id="dash-energy" class="text-xl font-bold font-editorial text-terraGreen-300">6.8 MWh</div>
+                        <div class="text-[10px] text-gray-400">Solar & Wind</div>
+                    </div>
+                    <div class="bg-navy-900/90 border border-white/10 p-3.5 rounded-xl space-y-1">
+                        <div class="text-[10px] text-gray-400 uppercase tracking-wider font-mono">ECO TIER</div>
+                        <div id="dash-tier" class="text-xl font-bold font-editorial text-amber-300">Level 4</div>
+                        <div class="text-[10px] text-gray-400">Planet Guardian</div>
+                    </div>
+                </div>
+
+                <!-- Monthly Offset Chart.js Graph -->
+                <div class="bg-navy-900/90 border border-white/10 p-4 rounded-xl space-y-3">
+                    <div class="flex justify-between items-center text-xs font-mono">
+                        <span class="text-terraGreen-300 font-bold uppercase tracking-wider flex items-center gap-1.5">
+                            <span class="w-2 h-2 rounded-full bg-terraGreen-400"></span> MONTHLY CO₂ REDUCTION TRAJECTORY (TONS)
+                        </span>
+                        <span class="text-gray-400">YEAR 2026</span>
+                    </div>
+                    <div class="w-full h-52 relative">
+                        <canvas id="user-offset-chart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Achievement Badges Showcase -->
+                <div class="space-y-3">
+                    <div class="text-xs font-bold uppercase tracking-widest text-gray-300 flex items-center gap-2">
+                        <span>🏆 EARNED ACHIEVEMENT BADGES</span>
+                    </div>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <div class="bg-navy-900/90 border border-terraGreen-400/50 p-3 rounded-xl flex items-center gap-3">
+                            <div class="text-2xl">🌿</div>
+                            <div>
+                                <div class="text-xs font-bold text-white">Seedling</div>
+                                <div class="text-[10px] text-terraGreen-300">First Pledge</div>
+                            </div>
+                        </div>
+                        <div class="bg-navy-900/90 border border-terraGreen-400/50 p-3 rounded-xl flex items-center gap-3">
+                            <div class="text-2xl">⚡</div>
+                            <div>
+                                <div class="text-xs font-bold text-white">Solar Pioneer</div>
+                                <div class="text-[10px] text-terraGreen-300">5 MWh Clean</div>
+                            </div>
+                        </div>
+                        <div class="bg-navy-900/90 border border-terraGreen-400/50 p-3 rounded-xl flex items-center gap-3">
+                            <div class="text-2xl">🛡️</div>
+                            <div>
+                                <div class="text-xs font-bold text-white">Guardian</div>
+                                <div class="text-[10px] text-terraGreen-300">10+ Tons CO₂</div>
+                            </div>
+                        </div>
+                        <div class="bg-navy-900/90 border border-white/10 p-3 rounded-xl flex items-center gap-3 opacity-60">
+                            <div class="text-2xl">🌴</div>
+                            <div>
+                                <div class="text-xs font-bold text-gray-400">Forest Titan</div>
+                                <div class="text-[10px] text-gray-500">80% to Unlock</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 2: EDIT PROFILE & PHOTO -->
+            <div id="portal-tab-profile" class="hidden space-y-6">
+                <!-- Profile Photo Upload & Live Preview Zone -->
+                <div class="flex flex-col items-center justify-center space-y-3">
+                    <div class="relative w-24 h-24 rounded-full border-2 border-terraGreen-400 overflow-hidden shadow-2xl bg-navy-900 group">
+                        <img id="avatar-preview-img" src="assets/solution_communities.webp" alt="Profile Preview" loading="lazy" decoding="async" class="w-full h-full object-cover">
+                        <label for="user-photo-input" class="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
+                            <span class="text-[11px] font-bold uppercase tracking-wider text-white text-center px-1">📷 CHANGE PHOTO</span>
+                        </label>
+                    </div>
+                    
+                    <!-- Hidden Real File Input -->
+                    <input type="file" id="user-photo-input" accept="image/*" onchange="handlePhotoUpload(event)" class="hidden">
+                    
+                    <label for="user-photo-input" class="px-4 py-1.5 rounded-full border border-terraGreen-400/60 bg-terraGreen-500/20 text-xs text-terraGreen-300 hover:bg-terraGreen-500 hover:text-white font-mono transition-all cursor-pointer">
+                        📁 Choose Photo From Device
+                    </label>
+                </div>
+
+                <!-- Profile Details Form -->
+                <form onsubmit="handleAuthSubmit(event)" class="space-y-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div id="user-name-wrap">
+                            <label class="block text-[11px] font-bold uppercase tracking-wider text-gray-300 mb-1">User Full Name</label>
+                            <input type="text" id="user-name-input" required value="Ravish Kumar" placeholder="Your Name" class="w-full px-4 py-2.5 rounded-lg bg-navy-900 border border-white/20 text-xs text-white focus:outline-none focus:border-terraGreen-400">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold uppercase tracking-wider text-gray-300 mb-1">Email Address</label>
+                            <input type="email" id="user-email-input" required value="ravish@terranova.earth" placeholder="yourname@example.com" class="w-full px-4 py-2.5 rounded-lg bg-navy-900 border border-white/20 text-xs text-white focus:outline-none focus:border-terraGreen-400">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold uppercase tracking-wider text-gray-300 mb-1">Password</label>
+                        <input type="password" id="user-password-input" value="admin123" placeholder="Create a password" class="w-full px-4 py-2.5 rounded-lg bg-navy-900 border border-white/20 text-xs text-white focus:outline-none focus:border-terraGreen-400">
+                    </div>
+                    <div id="user-bio-wrap">
+                        <label class="block text-[11px] font-bold uppercase tracking-wider text-gray-300 mb-1">Member Bio / Designation</label>
+                        <input type="text" id="user-bio-input" value="Climate Technologist & Terra Nova Pioneer" placeholder="Designation" class="w-full px-4 py-2.5 rounded-lg bg-navy-900 border border-white/20 text-xs text-white focus:outline-none focus:border-terraGreen-400">
+                    </div>
+
+                    <!-- Primary Login & Save Button -->
+                    <button id="auth-submit-btn" type="submit" class="w-full py-3.5 rounded-full bg-terraGreen-500 hover:bg-terraGreen-400 text-white text-xs uppercase tracking-widest font-bold transition-all shadow-lg shadow-terraGreen-600/30 cursor-pointer">
+                        SAVE PROFILE & SWAP LOGO TO MY PHOTO →
+                    </button>
+                </form>
+
+                <!-- Logout Button (Resets Logo) -->
+                <div id="logout-container" class="hidden pt-2 border-t border-white/10 text-center">
+                    <button onclick="handleUserLogout()" class="w-full py-2.5 rounded-full border border-red-500/40 text-red-400 hover:bg-red-500/20 text-xs uppercase tracking-widest font-bold transition-colors cursor-pointer">
+                        🚪 LOGOUT (RESET LOGO TO TERRA NOVA)
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main JavaScript Logic -->
+    <script src="script.js?v=api-origin-20261003"></script>
+</body>
+</html>

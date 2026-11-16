@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Contribution receipt | Terra Nova</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>@media print { body { background: white !important; color: #111827 !important; } .receipt-sheet { border: 0 !important; background: white !important; color: #111827 !important; box-shadow: none !important; } .no-print { display: none !important; } .receipt-muted { color: #4b5563 !important; } }</style>
+</head>
+<body class="min-h-screen bg-[#050810] px-5 py-12 font-['Plus_Jakarta_Sans'] text-white sm:py-20">
+  <main class="mx-auto max-w-2xl">
+    <div class="no-print mb-6 flex justify-between gap-4 text-sm"><a href="/campaigns.html" class="text-[#c2d9b8]">← Campaigns</a><a href="/" class="text-gray-300">Terra Nova home</a></div>
+    <section class="receipt-sheet border border-white/15 bg-[#0c141c] p-7 sm:p-12">
+      <div class="flex items-start justify-between gap-5 border-b border-current/10 pb-7">
+        <div><p class="text-xs font-bold tracking-[0.25em]">TERRA NOVA</p><h1 class="mt-5 font-['Cinzel'] text-3xl uppercase">Contribution receipt</h1><p class="receipt-muted mt-2 text-sm text-gray-400">Payment confirmation</p></div>
+        <div class="text-right"><p class="text-xs uppercase tracking-[0.18em] text-[#a5c49a]">Verified payment</p><p id="receipt-reference" class="mt-2 font-mono text-xs"></p></div>
+      </div>
+      <div id="receipt-status" class="py-8 text-sm text-gray-300" role="status" aria-live="polite">Verifying payment with Stripe...</div>
+      <div id="receipt-details" class="hidden">
+        <dl class="grid gap-x-8 gap-y-6 py-8 sm:grid-cols-2">
+          <div><dt class="receipt-muted text-xs uppercase tracking-wider text-gray-400">Contributor</dt><dd id="receipt-name" class="mt-2 font-semibold"></dd></div>
+          <div><dt class="receipt-muted text-xs uppercase tracking-wider text-gray-400">Email</dt><dd id="receipt-email" class="mt-2 break-all"></dd></div>
+          <div><dt class="receipt-muted text-xs uppercase tracking-wider text-gray-400">Campaign</dt><dd id="receipt-campaign" class="mt-2 font-semibold"></dd></div>
+          <div><dt class="receipt-muted text-xs uppercase tracking-wider text-gray-400">Contribution</dt><dd id="receipt-amount" class="mt-2 font-semibold"></dd></div>
+          <div><dt class="receipt-muted text-xs uppercase tracking-wider text-gray-400">Frequency</dt><dd id="receipt-frequency" class="mt-2 capitalize"></dd></div>
+          <div><dt class="receipt-muted text-xs uppercase tracking-wider text-gray-400">Paid</dt><dd id="receipt-date" class="mt-2"></dd></div>
+        </dl>
+        <p id="receipt-note" class="receipt-muted border-t border-current/10 pt-6 text-xs leading-relaxed text-gray-400"></p>
+        <div class="no-print mt-8 flex flex-wrap gap-3"><button id="print-receipt" class="bg-[#638453] px-5 py-3 text-xs font-bold uppercase tracking-wider hover:bg-terraGreen-500">Print / Save PDF</button><a id="receipt-campaign-link" href="/campaigns.html" class="border border-white/20 px-5 py-3 text-xs font-bold uppercase tracking-wider hover:bg-white/5">View campaign</a></div>
+      </div>
+    </section>
+  </main>
+  <script>
+    const localApiHosts = ['localhost', '127.0.0.1', '::1'];
+    const apiOrigin = location.protocol === 'file:' || (localApiHosts.includes(location.hostname) && location.port !== '3000')
+      ? `http://${location.hostname || 'localhost'}:3000`
+      : location.origin;
+
+    async function loadReceipt() {
+      const status = document.getElementById('receipt-status');
+      const sessionId = new URLSearchParams(location.search).get('session_id');
+      if (!sessionId) {
+        status.textContent = 'A completed checkout session is required to view this receipt.';
+        return;
+      }
+      try {
+        const response = await fetch(`${apiOrigin}/api/donations/receipt/${encodeURIComponent(sessionId)}`, { headers: { Accept: 'application/json' } });
+        const contentType = response.headers.get('content-type') || '';
+        if (!contentType.includes('application/json')) throw new Error(`The receipt API at ${apiOrigin} returned a page instead of JSON.`);
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || 'Payment could not be verified.');
+        const receipt = data.receipt;
+        document.getElementById('receipt-reference').textContent = receipt.reference;
+        document.getElementById('receipt-name').textContent = receipt.donorName;
+        document.getElementById('receipt-email').textContent = receipt.donorEmail;
+        document.getElementById('receipt-campaign').textContent = receipt.campaignName;
+        document.getElementById('receipt-amount').textContent = new Intl.NumberFormat(undefined, { style: 'currency', currency: receipt.currency }).format(receipt.amount);
+        document.getElementById('receipt-frequency').textContent = receipt.frequency;
+        document.getElementById('receipt-date').textContent = new Date(receipt.paidAt).toLocaleString();
+        document.getElementById('receipt-note').textContent = receipt.note;
+        document.getElementById('receipt-campaign-link').href = `/campaign.html?id=${encodeURIComponent(receipt.campaignId)}`;
+        document.getElementById('receipt-details').classList.remove('hidden');
+        status.classList.add('hidden');
+      } catch (error) {
+        status.textContent = error.message;
+        status.classList.add('text-red-300');
+      }
+    }
+
+    document.getElementById('print-receipt').addEventListener('click', () => window.print());
+    loadReceipt();
+  </script>
+</body>
+</html>
